@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { MessageCircle, X, Send, Loader2, Sparkles, ChevronRight } from 'lucide-react';
+import { MessageCircle, X, Send, Loader2, Phone, ChevronRight } from 'lucide-react';
 import { GoogleGenAI, Chat } from "@google/genai";
 
 interface Message {
@@ -14,6 +14,8 @@ const ChatWidget = () => {
   ]);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [showWAPopup, setShowWAPopup] = useState(false); // State for WA Confirmation
+  
   const messagesEndRef = useRef<HTMLDivElement>(null);
   
   // State untuk instance chat
@@ -131,6 +133,12 @@ const ChatWidget = () => {
     if (e.key === 'Enter') handleSend();
   };
 
+  // WhatsApp Redirect Logic
+  const handleWARedirect = () => {
+    window.open('https://wa.me/6285117150919', '_blank');
+    setShowWAPopup(false);
+  };
+
   // --- Logic Drag & Scroll ---
   const handleMouseDown = (e: React.MouseEvent) => {
     isDragging.current = true;
@@ -202,7 +210,7 @@ const ChatWidget = () => {
       {/* 2. LAYER POPUP CHAT (Absolute & Origin Bottom Right) */}
       <div 
         className={`
-          origin-bottom-right transition-all duration-700 ease-in-out
+          relative origin-bottom-right transition-all duration-700 ease-in-out
           bg-white rounded-3xl shadow-2xl border border-purple-100 overflow-hidden flex flex-col
           w-[350px] md:w-[380px] h-[500px] overscroll-contain
           ${isOpen ? 'scale-100 opacity-100 translate-y-0' : 'scale-0 opacity-0 translate-y-10 pointer-events-none'}
@@ -210,8 +218,40 @@ const ChatWidget = () => {
         style={{ overscrollBehavior: 'contain' }}
         onWheel={handlePopupWheel} // Stop propagation scroll ke body
       >
+        
+        {/* === CONFIRMATION POPUP OVERLAY === */}
+        {showWAPopup && (
+          <div className="absolute inset-0 z-50 bg-black/40 backdrop-blur-[2px] flex items-center justify-center p-6 animate-fade-in">
+             <div className="bg-white rounded-2xl p-5 w-full shadow-2xl transform scale-100 animate-fadeIn">
+                <div className="flex flex-col items-center text-center">
+                  <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-3">
+                     <Phone className="text-green-600 w-6 h-6" />
+                  </div>
+                  <h4 className="font-bold text-gray-800 text-lg mb-1">Pindah ke WhatsApp?</h4>
+                  <p className="text-gray-500 text-sm mb-5">
+                    Kamu akan diarahkan ke chat WhatsApp Admin Sans AI.
+                  </p>
+                  <div className="flex gap-3 w-full">
+                    <button 
+                      onClick={() => setShowWAPopup(false)}
+                      className="flex-1 py-2.5 rounded-xl border border-gray-200 text-gray-600 font-semibold text-sm hover:bg-gray-50 transition-colors"
+                    >
+                      Batal
+                    </button>
+                    <button 
+                      onClick={handleWARedirect}
+                      className="flex-1 py-2.5 rounded-xl bg-green-500 text-white font-semibold text-sm hover:bg-green-600 shadow-md transition-colors"
+                    >
+                      Ya, Chat
+                    </button>
+                  </div>
+                </div>
+             </div>
+          </div>
+        )}
+
         {/* Header */}
-        <div className="bg-sans-purple p-4 flex justify-between items-center shrink-0">
+        <div className="bg-sans-purple p-4 flex justify-between items-center shrink-0 z-10 relative">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center backdrop-blur-sm">
               <MessageCircle className="w-5 h-5 text-sans-yellow" />
@@ -220,7 +260,7 @@ const ChatWidget = () => {
               <h3 className="font-bold text-white text-lg leading-tight">Sans AI</h3>
               <p className="text-purple-200 text-xs flex items-center gap-1">
                 <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
-                Online (Flash Lite)
+                Online
               </p>
             </div>
           </div>
@@ -232,9 +272,26 @@ const ChatWidget = () => {
           </button>
         </div>
 
+        {/* === WHATSAPP BANNER === */}
+        <button 
+          onClick={() => setShowWAPopup(true)}
+          className="bg-green-50 px-4 py-3 flex items-center justify-between border-b border-green-100 hover:bg-green-100 transition-colors cursor-pointer group"
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center text-white shadow-sm group-hover:scale-110 transition-transform">
+              <Phone size={14} fill="white" />
+            </div>
+            <div className="text-left">
+               <p className="text-xs font-bold text-green-800 leading-tight">Sans AI tersedia di WhatsApp</p>
+               <p className="text-[10px] text-green-600">Klik untuk chat admin langsung</p>
+            </div>
+          </div>
+          <ChevronRight size={16} className="text-green-500 group-hover:translate-x-1 transition-transform" />
+        </button>
+
         {/* Messages Area */}
         <div 
-          className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50/50 overscroll-contain custom-scrollbar"
+          className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50/50 overscroll-contain custom-scrollbar relative"
           style={{ overscrollBehavior: 'contain' }}
         >
           {messages.map((msg, idx) => (
@@ -265,7 +322,7 @@ const ChatWidget = () => {
         </div>
 
         {/* Shortcut & Input Area */}
-        <div className="bg-white border-t border-gray-100 shrink-0">
+        <div className="bg-white border-t border-gray-100 shrink-0 relative z-20">
           {/* Shortcuts Scrollable Area with Drag & Wheel support */}
           <div 
             ref={scrollContainerRef}
