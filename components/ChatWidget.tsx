@@ -135,7 +135,9 @@ const ChatWidget = () => {
 
   // WhatsApp Redirect Logic
   const handleWARedirect = () => {
-    window.open('https://wa.me/6285117150919', '_blank');
+    const message = "Halo Sans AI 👋";
+    const url = `https://wa.me/6285117150919?text=${encodeURIComponent(message)}`;
+    window.open(url, '_blank');
     setShowWAPopup(false);
   };
 
