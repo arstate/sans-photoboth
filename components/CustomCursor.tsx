@@ -50,23 +50,20 @@ const CustomCursor = () => {
     const handleMouseOver = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
       
-      // Deteksi khusus untuk mode "Lihat" (Portfolio/Gallery)
-      const viewElement = target.closest('.cursor-view');
-      const isView = !!viewElement;
-      setIsViewMode(isView);
-
-      // Deteksi interaktif umum (Tombol, Link, atau class cursor-scale)
+      // Deteksi elemen interaktif (Tombol, Link, class cursor-scale/view, atau cursor pointer)
+      // Sesuai request: Semua elemen yang bisa diklik akan memunculkan teks "Lihat"
       const isInteractive = 
         target.tagName === 'BUTTON' ||
         target.tagName === 'A' ||
         target.closest('button') ||
         target.closest('a') ||
         target.closest('.cursor-scale') ||
+        target.closest('.cursor-view') ||
         target.classList.contains('cursor-scale') ||
-        isView || // Jika mode view, pasti interaktif
         window.getComputedStyle(target).cursor === 'pointer';
 
       setIsHovering(!!isInteractive);
+      setIsViewMode(!!isInteractive); // Aktifkan teks "Lihat" untuk semua elemen interaktif
     };
 
     window.addEventListener('mousemove', onMouseMove);
