@@ -47,10 +47,19 @@ const ChatWidget = () => {
   useEffect(() => {
     const initChat = async () => {
       try {
-        const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+        // Prioritaskan env var, tapi gunakan key dari user jika env tidak terdeteksi
+        const apiKey = process.env.API_KEY || 'AIzaSyCz_T7OrDsZzqzaO7uxZ8L4IZrp-usKMZk';
+        
+        if (!apiKey) {
+          console.error("API Key kosong");
+          setMessages(prev => [...prev, { role: 'model', text: 'Maaf, sistem sedang maintenance (API Key missing).' }]);
+          return;
+        }
+
+        const ai = new GoogleGenAI({ apiKey });
         
         const chat = ai.chats.create({
-          model: 'gemini-flash-lite-latest',
+          model: 'gemini-flash-lite-latest', // Menggunakan model Flash Lite sesuai request (Cepat & Hemat)
           config: {
             systemInstruction: `Anda adalah 'Sans AI', asisten virtual untuk 'Sans Photobooth' di Surabaya.
             Gaya bicara: Gen-Z, ramah, santai, menggunakan emoji, dan membantu. Gunakan bahasa Indonesia gaul tapi sopan (aku/kamu).
@@ -93,8 +102,9 @@ const ChatWidget = () => {
         const text = result.text;
         setMessages(prev => [...prev, { role: 'model', text: text }]);
       } else {
-        // Fallback jika session null
-        throw new Error("Chat session not initialized");
+        // Coba init ulang atau berikan pesan error jika sesi belum siap
+        const errorMessage = 'Sistem AI sedang memuat ulang, coba kirim pesan lagi dalam beberapa detik ya! 🔄';
+        setMessages(prev => [...prev, { role: 'model', text: errorMessage }]);
       }
     } catch (error: any) {
       console.error("Chat Error:", error);
@@ -104,8 +114,10 @@ const ChatWidget = () => {
       if (error.message) {
         if (error.message.includes('API key')) {
           errorMessage = 'Ups, API Key tidak valid atau expired. Kontak admin ya!';
-        } else if (error.message.includes('404')) {
-          errorMessage = 'Model AI sedang sibuk atau tidak ditemukan. Coba lagi nanti.';
+        } else if (error.message.includes('404') || error.message.includes('not found')) {
+          errorMessage = 'Model AI sedang sibuk. Coba lagi nanti.';
+        } else if (error.message.includes('503')) {
+          errorMessage = 'Server lagi penuh, bestie. Tunggu sebentar ya!';
         }
       }
       
@@ -208,7 +220,7 @@ const ChatWidget = () => {
               <h3 className="font-bold text-white text-lg leading-tight">Sans AI</h3>
               <p className="text-purple-200 text-xs flex items-center gap-1">
                 <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
-                Online
+                Online (Flash Lite)
               </p>
             </div>
           </div>

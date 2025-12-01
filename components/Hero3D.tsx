@@ -3,18 +3,11 @@ import { Canvas, useFrame } from '@react-three/fiber';
 import { Torus, Sphere, MeshDistortMaterial, Float, Environment } from '@react-three/drei';
 import * as THREE from 'three';
 
-// Fix for TypeScript errors: "Property '...' does not exist on type 'JSX.IntrinsicElements'"
-// This extends the global JSX namespace to include Three.js elements used in R3F.
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      meshBasicMaterial: any;
-      ambientLight: any;
-      directionalLight: any;
-      group: any;
-    }
-  }
-}
+// Use proxy components to bypass TypeScript JSX.IntrinsicElements checks for R3F elements
+const MeshBasicMaterial = 'meshBasicMaterial' as any;
+const AmbientLight = 'ambientLight' as any;
+const DirectionalLight = 'directionalLight' as any;
+const Group = 'group' as any;
 
 const WireframeTorus = () => {
   const meshRef = useRef<THREE.Mesh>(null);
@@ -30,7 +23,7 @@ const WireframeTorus = () => {
   return (
     <Torus ref={meshRef} args={[3.2, 0.8, 32, 100]} rotation={[Math.PI / 4, 0, 0]}>
       {/* Warna wireframe beige/abu muda agar halus di background terang */}
-      <meshBasicMaterial color="#E5E7EB" wireframe transparent opacity={0.4} />
+      <MeshBasicMaterial color="#E5E7EB" wireframe transparent opacity={0.4} />
     </Torus>
   );
 };
@@ -71,13 +64,13 @@ const Scene = () => {
     <>
       {/* Preset Studio untuk pencahayaan glossy yang bagus */}
       <Environment preset="studio" />
-      <ambientLight intensity={0.5} />
-      <directionalLight position={[10, 10, 5]} intensity={1} color="#ffffff" />
+      <AmbientLight intensity={0.5} />
+      <DirectionalLight position={[10, 10, 5]} intensity={1} color="#ffffff" />
       
       {/* Objek Utama: Wireframe Besar */}
-      <group position={[0, 0, -2]}>
+      <Group position={[0, 0, -2]}>
         <WireframeTorus />
-      </group>
+      </Group>
 
       {/* Elemen Dekoratif: Floating Blobs */}
       {/* Bola Ungu Utama (Brand Color) */}
