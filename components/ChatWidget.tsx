@@ -47,37 +47,11 @@ const ChatWidget = () => {
   useEffect(() => {
     const initChat = async () => {
       try {
-        // PRIORITY 1: Coba ambil dari Environment Variable (jika ada setup env yang benar)
-        // Kita handle 'process' secara aman karena di browser 'process' mungkin undefined
-        let apiKey = "";
-        
-        // Fallback Key sesuai request user untuk fix deployment Vercel
-        const USER_PROVIDED_KEY = "AIzaSyCz_T7OrDsZzqzaO7uxZ8L4IZrp-usKMZk";
-
-        try {
-          // Cek standard process.env (Node/CRA)
-          if (typeof process !== 'undefined' && process.env && process.env.API_KEY) {
-             apiKey = process.env.API_KEY;
-          } 
-          // Cek Vite Environment (import.meta.env)
-          // @ts-ignore
-          else if (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_API_KEY) {
-             // @ts-ignore
-             apiKey = import.meta.env.VITE_API_KEY;
-          }
-        } catch (e) {
-          // Ignore error akses env var
-        }
-
-        // Jika tidak ada di env, gunakan key manual dari user
-        if (!apiKey) {
-            apiKey = USER_PROVIDED_KEY;
-        }
-
-        if (!apiKey) {
-            console.warn("API Key not found in environment or fallback.");
-            return;
-        }
+        // Fix: Gunakan API Key dari environment variable jika ada, 
+        // jika tidak (seperti di local/preview), gunakan key fallback dari user.
+        const apiKey = (typeof process !== "undefined" && process.env && process.env.API_KEY) 
+          ? process.env.API_KEY 
+          : "AIzaSyCz_T7OrDsZzqzaO7uxZ8L4IZrp-usKMZk";
 
         const ai = new GoogleGenAI({ apiKey: apiKey });
         
