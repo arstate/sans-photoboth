@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from 'react';
 const CustomCursor = () => {
   const cursorRef = useRef<HTMLDivElement>(null);
   const [isHovering, setIsHovering] = useState(false);
+  const [isViewMode, setIsViewMode] = useState(false); // State baru untuk teks "Lihat"
   const [isVisible, setIsVisible] = useState(false);
   
   // Menggunakan Ref untuk menyimpan posisi agar tidak memicu re-render React setiap frame
@@ -49,12 +50,20 @@ const CustomCursor = () => {
     const handleMouseOver = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
       
+      // Deteksi khusus untuk mode "Lihat" (Portfolio/Gallery)
+      const viewElement = target.closest('.cursor-view');
+      const isView = !!viewElement;
+      setIsViewMode(isView);
+
+      // Deteksi interaktif umum (Tombol, Link, atau class cursor-scale)
       const isInteractive = 
         target.tagName === 'BUTTON' ||
         target.tagName === 'A' ||
         target.closest('button') ||
         target.closest('a') ||
+        target.closest('.cursor-scale') ||
         target.classList.contains('cursor-scale') ||
+        isView || // Jika mode view, pasti interaktif
         window.getComputedStyle(target).cursor === 'pointer';
 
       setIsHovering(!!isInteractive);
@@ -79,14 +88,14 @@ const CustomCursor = () => {
   return (
     <div
       ref={cursorRef}
-      // CHANGE: bg-white diganti menjadi bg-gray-300 agar hasil invert tidak hitam pekat
+      // bg-gray-300 agar hasil invert tidak hitam pekat
       className={`fixed top-0 left-0 pointer-events-none z-[9999] mix-blend-difference flex items-center justify-center rounded-full bg-gray-300 transition-[width,height] duration-300 ease-out will-change-transform ${
         isHovering ? 'w-24 h-24' : 'w-12 h-12'
       }`}
     >
       <span 
         className={`text-black font-bold text-[10px] uppercase tracking-widest transition-opacity duration-300 ${
-          isHovering ? 'opacity-100' : 'opacity-0'
+          isViewMode ? 'opacity-100' : 'opacity-0'
         }`}
       >
         Lihat
