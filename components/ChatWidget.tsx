@@ -170,8 +170,9 @@ const ChatWidget = () => {
   };
 
   const handleWheel = (e: React.WheelEvent) => {
+    // Mencegah scroll body saat scrolling horizontal di shortcut
+    e.stopPropagation();
     if (scrollContainerRef.current) {
-      // Ubah scroll vertikal mouse menjadi horizontal
       scrollContainerRef.current.scrollLeft += e.deltaY;
     }
   };
@@ -182,12 +183,17 @@ const ChatWidget = () => {
     handleSend(shortcut);
   };
 
+  // Mencegah event scroll bocor ke parent saat mouse ada di dalam widget
+  const handlePopupWheel = (e: React.WheelEvent) => {
+    e.stopPropagation();
+  };
+
   return (
     <div className="fixed bottom-6 right-6 z-[100] flex flex-col items-end">
       
       {/* 1. LAYER TOMBOL (Absolute) */}
       <div 
-        className={`absolute bottom-0 right-0 transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] origin-center ${
+        className={`absolute bottom-0 right-0 transition-all duration-700 ease-in-out origin-center ${
           isOpen ? 'scale-0 opacity-0 pointer-events-none' : 'scale-100 opacity-100'
         }`}
       >
@@ -205,11 +211,13 @@ const ChatWidget = () => {
       {/* 2. LAYER POPUP CHAT (Absolute & Origin Bottom Right) */}
       <div 
         className={`
-          origin-bottom-right transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)]
+          origin-bottom-right transition-all duration-700 ease-in-out
           bg-white rounded-3xl shadow-2xl border border-purple-100 overflow-hidden flex flex-col
-          w-[350px] md:w-[380px] h-[500px]
+          w-[350px] md:w-[380px] h-[500px] overscroll-contain
           ${isOpen ? 'scale-100 opacity-100 translate-y-0' : 'scale-0 opacity-0 translate-y-10 pointer-events-none'}
         `}
+        style={{ overscrollBehavior: 'contain' }}
+        onWheel={handlePopupWheel} // Stop propagation scroll ke body
       >
         {/* Header */}
         <div className="bg-sans-purple p-4 flex justify-between items-center shrink-0">
@@ -234,7 +242,10 @@ const ChatWidget = () => {
         </div>
 
         {/* Messages Area */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50/50">
+        <div 
+          className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50/50 overscroll-contain custom-scrollbar"
+          style={{ overscrollBehavior: 'contain' }}
+        >
           {messages.map((msg, idx) => (
             <div 
               key={idx} 
@@ -267,7 +278,8 @@ const ChatWidget = () => {
           {/* Shortcuts Scrollable Area with Drag & Wheel support */}
           <div 
             ref={scrollContainerRef}
-            className="px-4 pt-3 pb-1 overflow-x-auto no-scrollbar flex gap-2 cursor-grab active:cursor-grabbing select-none"
+            className="px-4 pt-3 pb-1 overflow-x-auto no-scrollbar flex gap-2 cursor-grab active:cursor-grabbing select-none overscroll-contain"
+            style={{ overscrollBehavior: 'contain' }}
             onMouseDown={handleMouseDown}
             onMouseLeave={handleMouseLeave}
             onMouseUp={handleMouseUp}
