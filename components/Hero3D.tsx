@@ -3,30 +3,6 @@ import { Canvas, useFrame } from '@react-three/fiber';
 import { Torus, Sphere, MeshDistortMaterial, Float, Environment } from '@react-three/drei';
 import * as THREE from 'three';
 
-// Extend JSX.IntrinsicElements to include React Three Fiber elements
-// We declare both global JSX and React.JSX to cover different TS/React versions and configurations
-declare module 'react' {
-  namespace JSX {
-    interface IntrinsicElements {
-      meshBasicMaterial: any;
-      ambientLight: any;
-      directionalLight: any;
-      group: any;
-    }
-  }
-}
-
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      meshBasicMaterial: any;
-      ambientLight: any;
-      directionalLight: any;
-      group: any;
-    }
-  }
-}
-
 const WireframeTorus = () => {
   const meshRef = useRef<THREE.Mesh>(null);
 
