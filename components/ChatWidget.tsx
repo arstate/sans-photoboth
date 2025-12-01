@@ -190,12 +190,12 @@ const ChatWidget = () => {
   };
 
   return (
-    <div className="fixed bottom-6 right-6 z-[100] flex flex-col items-end">
+    <div className="fixed bottom-6 right-6 z-[100] flex flex-col items-end pointer-events-none">
       
       {/* 1. LAYER TOMBOL (Absolute) */}
       <div 
         className={`absolute bottom-0 right-0 transition-all duration-700 ease-in-out origin-center ${
-          isOpen ? 'scale-0 opacity-0 pointer-events-none' : 'scale-100 opacity-100'
+          isOpen ? 'scale-0 opacity-0 pointer-events-none' : 'scale-100 opacity-100 pointer-events-auto'
         }`}
       >
         <button
@@ -215,7 +215,7 @@ const ChatWidget = () => {
           relative origin-bottom-right transition-all duration-700 ease-in-out
           bg-white rounded-3xl shadow-2xl border border-purple-100 overflow-hidden flex flex-col
           w-[350px] md:w-[380px] h-[500px] overscroll-contain
-          ${isOpen ? 'scale-100 opacity-100 translate-y-0' : 'scale-0 opacity-0 translate-y-10 pointer-events-none'}
+          ${isOpen ? 'scale-100 opacity-100 translate-y-0 pointer-events-auto' : 'scale-0 opacity-0 translate-y-10 pointer-events-none'}
         `}
         style={{ overscrollBehavior: 'contain' }}
         onWheel={handlePopupWheel} // Stop propagation scroll ke body
