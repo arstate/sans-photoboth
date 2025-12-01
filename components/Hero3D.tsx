@@ -3,6 +3,19 @@ import { Canvas, useFrame } from '@react-three/fiber';
 import { Torus, Sphere, MeshDistortMaterial, Float, Environment } from '@react-three/drei';
 import * as THREE from 'three';
 
+// Fix for TypeScript errors: "Property '...' does not exist on type 'JSX.IntrinsicElements'"
+// This extends the global JSX namespace to include Three.js elements used in R3F.
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      meshBasicMaterial: any;
+      ambientLight: any;
+      directionalLight: any;
+      group: any;
+    }
+  }
+}
+
 const WireframeTorus = () => {
   const meshRef = useRef<THREE.Mesh>(null);
 

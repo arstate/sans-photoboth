@@ -47,13 +47,7 @@ const ChatWidget = () => {
   useEffect(() => {
     const initChat = async () => {
       try {
-        // Fix: Gunakan API Key dari environment variable jika ada, 
-        // jika tidak (seperti di local/preview), gunakan key fallback dari user.
-        const apiKey = (typeof process !== "undefined" && process.env && process.env.API_KEY) 
-          ? process.env.API_KEY 
-          : "AIzaSyCz_T7OrDsZzqzaO7uxZ8L4IZrp-usKMZk";
-
-        const ai = new GoogleGenAI({ apiKey: apiKey });
+        const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
         
         const chat = ai.chats.create({
           model: 'gemini-flash-lite-latest',
@@ -67,7 +61,7 @@ const ChatWidget = () => {
             3. Self Photo Studio: Studio mandiri dengan remote, privasi penuh.
             4. Software Solution: Jual software photobooth (B2B).
 
-            Keunggulan: Hasil HD & Glowing, Share via QR Code, Basecamp Surabaya (bisa ke seluruh Jatim).
+            Keunggulan: Hasil Foto Super HD & Glowing, Share Softfile Instan via QR Code, Basecamp Surabaya (bisa ke seluruh Jatim).
 
             PENTING:
             - Jika ditanya soal HARGA/PRICELIST secara spesifik, arahkan pengguna untuk menghubungi WhatsApp admin di 088235479203 agar dapat penawaran terbaik.
@@ -99,12 +93,23 @@ const ChatWidget = () => {
         const text = result.text;
         setMessages(prev => [...prev, { role: 'model', text: text }]);
       } else {
-        // Fallback jika API key belum siap/error
-        setMessages(prev => [...prev, { role: 'model', text: 'Maaf bestie, aku lagi loading nih. Coba refresh ya atau hubungi WA Admin langsung! 🙏' }]);
+        // Fallback jika session null
+        throw new Error("Chat session not initialized");
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Chat Error:", error);
-      setMessages(prev => [...prev, { role: 'model', text: 'Waduh, koneksi lagi gangguan nih. Coba lagi nanti ya! 😢' }]);
+      let errorMessage = 'Waduh, koneksi lagi gangguan nih. Coba refresh ya! 😢';
+      
+      // Deteksi error spesifik untuk feedback ke user
+      if (error.message) {
+        if (error.message.includes('API key')) {
+          errorMessage = 'Ups, API Key tidak valid atau expired. Kontak admin ya!';
+        } else if (error.message.includes('404')) {
+          errorMessage = 'Model AI sedang sibuk atau tidak ditemukan. Coba lagi nanti.';
+        }
+      }
+      
+      setMessages(prev => [...prev, { role: 'model', text: errorMessage }]);
     } finally {
       setIsLoading(false);
     }
