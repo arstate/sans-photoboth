@@ -48,7 +48,7 @@ const ChatWidget = () => {
     const initChat = async () => {
       try {
         // Prioritaskan env var, tapi gunakan key dari user jika env tidak terdeteksi
-        const apiKey = process.env.API_KEY || 'AIzaSyCz_T7OrDsZzqzaO7uxZ8L4IZrp-usKMZk';
+        const apiKey = process.env.API_KEY || 'AIzaSyBwGpVbSSkq4TECh6H2I7jPcolBmiOInzE';
         
         if (!apiKey) {
           console.error("API Key kosong");
