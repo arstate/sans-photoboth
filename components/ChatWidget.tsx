@@ -47,42 +47,12 @@ const ChatWidget = () => {
   useEffect(() => {
     const initChat = async () => {
       try {
-        // PRIORITY 1: Coba ambil dari Environment Variable (jika ada setup env yang benar)
-        // Kita handle 'process' secara aman karena di browser 'process' mungkin undefined
-        let apiKey = "";
-        
-        // Fallback Key sesuai request user untuk fix deployment Vercel
-        const USER_PROVIDED_KEY = "AIzaSyCz_T7OrDsZzqzaO7uxZ8L4IZrp-usKMZk";
-
-        try {
-          // Cek standard process.env (Node/CRA)
-          if (typeof process !== 'undefined' && process.env && process.env.API_KEY) {
-             apiKey = process.env.API_KEY;
-          } 
-          // Cek Vite Environment (import.meta.env)
-          // @ts-ignore
-          else if (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_API_KEY) {
-             // @ts-ignore
-             apiKey = import.meta.env.VITE_API_KEY;
-          }
-        } catch (e) {
-          // Ignore error akses env var
-        }
-
-        // Jika tidak ada di env, gunakan key manual dari user
-        if (!apiKey) {
-            apiKey = USER_PROVIDED_KEY;
-        }
-
-        if (!apiKey) {
-            console.warn("API Key not found in environment or fallback.");
-            return;
-        }
-
-        const ai = new GoogleGenAI({ apiKey: apiKey });
+        // Menggunakan process.env.API_KEY secara langsung sesuai standar platform
+        // Variabel ini dijamin tersedia oleh environment eksekusi
+        const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
         
         const chat = ai.chats.create({
-          model: 'gemini-2.5-flash',
+          model: 'gemini-2.5-flash-lite-preview-02-05',
           config: {
             systemInstruction: `Anda adalah 'Sans AI', asisten virtual untuk 'Sans Photobooth' di Surabaya.
             Gaya bicara: Gen-Z, ramah, santai, menggunakan emoji, dan membantu. Gunakan bahasa Indonesia gaul tapi sopan (aku/kamu).
@@ -105,6 +75,8 @@ const ChatWidget = () => {
         setChatSession(chat);
       } catch (error) {
         console.error("Failed to init chat:", error);
+        // Fallback message jika inisialisasi gagal total (misal API key kosong dari server)
+        setMessages(prev => [...prev, { role: 'model', text: 'Maaf bestie, sistemku lagi maintenance sebentar. Silakan refresh atau WA admin ya! 🙏' }]);
       }
     };
 
@@ -125,12 +97,12 @@ const ChatWidget = () => {
         const text = result.text;
         setMessages(prev => [...prev, { role: 'model', text: text }]);
       } else {
-        // Fallback jika API key belum siap/error
-        setMessages(prev => [...prev, { role: 'model', text: 'Maaf bestie, aku lagi loading nih. Coba refresh ya atau hubungi WA Admin langsung! 🙏' }]);
+        // Fallback jika session belum siap
+        setMessages(prev => [...prev, { role: 'model', text: 'Sabar ya bestie, aku masih loading nih... Coba kirim ulang bentar lagi! ⏳' }]);
       }
     } catch (error) {
       console.error("Chat Error:", error);
-      setMessages(prev => [...prev, { role: 'model', text: 'Waduh, koneksi lagi gangguan nih. Coba lagi nanti ya! 😢' }]);
+      setMessages(prev => [...prev, { role: 'model', text: 'Waduh, koneksi putus nih. Coba lagi ya! 😢' }]);
     } finally {
       setIsLoading(false);
     }
