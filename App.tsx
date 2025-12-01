@@ -3,6 +3,7 @@ import Navbar from './components/Navbar';
 import Hero3D from './components/Hero3D';
 import Button from './components/Button';
 import CustomCursor from './components/CustomCursor';
+import ChatWidget from './components/ChatWidget';
 import { Camera, Zap, Users, Monitor, Instagram, CheckCircle2, MapPin, Phone } from 'lucide-react';
 import { ServiceItem } from './types';
 
@@ -63,6 +64,7 @@ function App() {
     <div className="font-sans text-gray-800">
       <CustomCursor />
       <Navbar />
+      <ChatWidget />
 
       {/* --- HERO SECTION --- */}
       <section id="home" className="relative h-screen w-full flex items-center justify-center overflow-hidden">
