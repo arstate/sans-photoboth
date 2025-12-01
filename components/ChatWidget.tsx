@@ -82,7 +82,7 @@ const ChatWidget = () => {
         const ai = new GoogleGenAI({ apiKey: apiKey });
         
         const chat = ai.chats.create({
-          model: 'gemini-2.5-flash',
+          model: 'gemini-2.5-flash-lite-preview-02-05',
           config: {
             systemInstruction: `Anda adalah 'Sans AI', asisten virtual untuk 'Sans Photobooth' di Surabaya.
             Gaya bicara: Gen-Z, ramah, santai, menggunakan emoji, dan membantu. Gunakan bahasa Indonesia gaul tapi sopan (aku/kamu).
