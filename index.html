@@ -60,9 +60,11 @@
         background: #6D28D9;
       }
 
-      /* Hide default cursor only on devices that support hover (Desktop) */
+      /* Hide default cursor only on devices that support hover (Desktop) AND when app is loaded */
+      /* This prevents invisible cursor if JS crashes */
       @media (hover: hover) and (pointer: fine) {
-        body, a, button, input, select {
+        body:has(#root > div), 
+        a, button, input, select {
           cursor: none !important;
         }
       }
@@ -83,5 +85,7 @@
 </head>
   <body class="bg-sans-bg text-gray-800 antialiased overflow-x-hidden selection:bg-sans-yellow selection:text-sans-purple">
     <div id="root"></div>
+    <!-- VITAL: Script tag to load the React Application -->
+    <script type="module" src="./index.tsx"></script>
   </body>
 </html>

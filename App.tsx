@@ -60,7 +60,7 @@ function App() {
   };
 
   return (
-    <div className="font-sans text-gray-800 cursor-none">
+    <div className="font-sans text-gray-800">
       <CustomCursor />
       <Navbar />
 
