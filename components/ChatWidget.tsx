@@ -1,16 +1,18 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { MessageCircle, X, Send, Loader2, Phone, ChevronRight } from 'lucide-react';
+import { MessageCircle, X, Send, Loader2, Phone, ChevronRight, ExternalLink } from 'lucide-react';
 import { GoogleGenAI, Chat } from "@google/genai";
 
 interface Message {
   role: 'user' | 'model';
   text: string;
+  isButton?: boolean;
+  actionUrl?: string;
 }
 
 const ChatWidget = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
-    { role: 'model', text: 'Yo whatsup! 👋 Gue Sans AI. Mau nanya photobooth buat event apa nih?' }
+    { role: 'model', text: 'Halo Bestie! 👋 Aku Sans AI. Ada yang bisa aku bantu buat momen serumu?' }
   ]);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -58,7 +60,6 @@ const ChatWidget = () => {
   // Helper to create a new session with specific key
   const createChatSession = (keyIndex: number) => {
     try {
-      // Ensure index is within bounds, wrap around or stop if needed, but here we stop at end
       if (keyIndex >= API_KEYS.length) {
         console.error("All API Keys exhausted");
         return null;
@@ -70,16 +71,27 @@ const ChatWidget = () => {
       return ai.chats.create({
         model: 'gemini-flash-lite-latest',
         config: {
-          systemInstruction: `Anda adalah 'Sans AI', asisten virtual 'Sans Photobooth' Surabaya.
-          Style: Neo-Brutalist Gen-Z. Gunakan bahasa gaul, santai, to the point. Panggil user "Bro/Sist/Bestie".
-          Jangan terlalu formal.
+          systemInstruction: `Anda adalah 'Sans AI', customer service virtual dari Sans Photobooth yang super ramah dan asik.
+
+          PERSONALITY & NADA BICARA:
+          1. Panggil user dengan sebutan "Bestie" ✨.
+          2. Gunakan bahasa Indonesia yang santai, bersahabat, dan sopan (tidak kaku, tidak kasar, tidak "lu gue").
+          3. Gunakan emoji secukupnya agar chat terasa hidup dan menyenangkan 😄.
+          4. JANGAN gunakan format markdown (seperti tanda bintang *, pagar #, bold, italic). Tulis teks biasa saja.
           
-          Info:
-          1. Event Photobooth: Wedding/Party, Sony Alpha Gear, Cetak Kilat, Studio Lighting.
-          2. Mobile: Fotografer keliling, softfile only, direct share.
-          3. Self Photo: Studio mandiri.
-          
-          PENTING: Kalau tanya HARGA, selalu arahkan/suruh WA ke 088235479203.
+          PANJANG JAWABAN:
+          - Jawablah dengan JELAS dan INFORMATIF, tapi tetap ringkas (2-4 kalimat). 
+          - Jangan terlalu pendek sampai terkesan ketus, tapi jangan membuat karangan panjang.
+
+          SOP KHUSUS:
+          - Jika user bertanya soal PRICELIST, HARGA, BOOKING, atau CUSTOM REQUEST: Jelaskan sekilas layanan kami (Event/Mobile/Self Photo), lalu SARANKAN user untuk "Chat WA Admin" agar mendapat detail lengkapnya.
+          - Jika user hanya menyapa atau bertanya info umum (lokasi, fitur): Jawab langsung tanpa menyuruh ke WA.
+
+          INFO PRODUK:
+          - Photobooth Event: Unlimited print, kamera Sony Alpha, lighting studio pro.
+          - Mobile/Roving: Fotografer keliling, tamu dapat softfile via QR code instan.
+          - Self Photo: Studio mandiri dengan remote, privasi terjaga.
+          - Lokasi: Surabaya.
           `,
         },
       });
@@ -100,7 +112,9 @@ const ChatWidget = () => {
     if (!textToSend.trim() || isLoading) return;
 
     setInputValue('');
-    setMessages(prev => [...prev, { role: 'user', text: textToSend }]);
+    // Optimistic UI update
+    const currentMessages = [...messages, { role: 'user', text: textToSend } as Message];
+    setMessages(currentMessages);
     setIsLoading(true);
 
     try {
@@ -108,13 +122,11 @@ const ChatWidget = () => {
       let success = false;
       let activeSession = chatSession;
 
-      // If session is missing (rare), try to create one
       if (!activeSession) {
         activeSession = createChatSession(currentKeyIndex.current);
       }
 
       // RETRY LOOP LOGIC
-      // Try to send message. If fail, switch key, create new session, retry loop.
       while (!success && currentKeyIndex.current < API_KEYS.length) {
         if (!activeSession) {
            currentKeyIndex.current++;
@@ -127,31 +139,45 @@ const ChatWidget = () => {
           resultText = result.text;
           success = true;
           
-          // Update the main state if we switched sessions successfully
           if (activeSession !== chatSession) {
             setChatSession(activeSession);
           }
         } catch (error) {
-          console.warn(`Key at index ${currentKeyIndex.current} failed. Switching to next key...`);
-          currentKeyIndex.current++; // Increment index
-          
+          console.warn(`Key at index ${currentKeyIndex.current} failed. Switching...`);
+          currentKeyIndex.current++; 
           if (currentKeyIndex.current < API_KEYS.length) {
-            // Create new session for the next attempt
             activeSession = createChatSession(currentKeyIndex.current);
-          } else {
-            console.error("All API keys failed.");
           }
         }
       }
 
       if (success) {
-        setMessages(prev => [...prev, { role: 'model', text: resultText }]);
+        // CLEANUP: Remove markdown symbols (*, #, _, `, >) to ensure clean text
+        const cleanText = resultText.replace(/[*_~`#>-]/g, '').trim();
+        
+        const newMessages = [...currentMessages, { role: 'model', text: cleanText } as Message];
+
+        // LOGIC: Only show WhatsApp Button if the AI explicitly suggests contacting admin/WA
+        // or mentions the number. This prevents the button from appearing on every chat.
+        const lowerText = cleanText.toLowerCase();
+        const triggerKeywords = ["wa admin", "whatsapp admin", "hubungi admin", "0882", "chat wa"];
+        
+        if (triggerKeywords.some(keyword => lowerText.includes(keyword))) {
+           newMessages.push({
+             role: 'model',
+             text: 'Chat Admin WhatsApp',
+             isButton: true,
+             actionUrl: 'https://wa.me/6288235479203?text=Halo%20Admin%20Sans,%20mau%20tanya%20pricelist'
+           });
+        }
+
+        setMessages(newMessages);
       } else {
         throw new Error("Service Unavailable");
       }
 
     } catch (error) {
-      setMessages(prev => [...prev, { role: 'model', text: 'Waduh, server lagi penuh banget nih bestie. Coba chat WhatsApp aja ya biar fast response! 🙏' }]);
+      setMessages(prev => [...prev, { role: 'model', text: 'Waduh, server lagi padat Bestie. Coba chat WA admin langsung aja ya! 🙏' }]);
     } finally {
       setIsLoading(false);
     }
@@ -162,7 +188,7 @@ const ChatWidget = () => {
   };
 
   const handleWARedirect = () => {
-    window.open(`https://wa.me/6285117150919`, '_blank');
+    window.open(`https://wa.me/6288235479203?text=Halo%20Admin%20Sans,%20mau%20tanya%20pricelist`, '_blank');
     setShowWAPopup(false);
   };
 
@@ -268,15 +294,24 @@ const ChatWidget = () => {
         <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-[#f0f0f0] custom-scrollbar">
           {messages.map((msg, idx) => (
             <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-              <div 
-                className={`max-w-[85%] p-3 border-2 border-black text-sm font-medium ${
-                  msg.role === 'user' 
-                    ? 'bg-black text-white shadow-[4px_4px_0px_0px_rgba(139,92,246,1)]' // Purple shadow
-                    : 'bg-white text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]'
-                }`}
-              >
-                {msg.text}
-              </div>
+              {msg.isButton ? (
+                 <button 
+                   onClick={() => window.open(msg.actionUrl, '_blank')}
+                   className="flex items-center gap-2 bg-green-500 text-white px-4 py-3 border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] transition-all font-bold uppercase text-sm"
+                 >
+                    <Phone size={16} /> {msg.text} <ExternalLink size={14} />
+                 </button>
+              ) : (
+                <div 
+                  className={`max-w-[85%] p-3 border-2 border-black text-sm font-medium ${
+                    msg.role === 'user' 
+                      ? 'bg-black text-white shadow-[4px_4px_0px_0px_rgba(139,92,246,1)]' // Purple shadow
+                      : 'bg-white text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]'
+                  }`}
+                >
+                  {msg.text}
+                </div>
+              )}
             </div>
           ))}
           {isLoading && (
