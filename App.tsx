@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Navbar from './components/Navbar';
 import Hero3D from './components/Hero3D';
 import Button from './components/Button';
 import CustomCursor from './components/CustomCursor';
 import ChatWidget from './components/ChatWidget';
-import { Camera, Zap, Users, Monitor, Instagram, Check, MapPin, Phone, Star, ArrowRight } from 'lucide-react';
+import { Camera, Zap, Users, Monitor, Instagram, Check, MapPin, Phone, Star, ArrowRight, X, ExternalLink, Maximize } from 'lucide-react';
 import { ServiceItem } from './types';
 
 // Data Definitions
@@ -31,7 +31,8 @@ const services: ServiceItem[] = [
     title: "Software B2B",
     description: "Vendor lain mau pake sistem kita? Bisa banget. White label available.",
     icon: <Monitor className="w-6 h-6" />,
-    tags: ["Lisensi", "Tech Support"]
+    tags: ["Lisensi", "Tech Support"],
+    demoUrl: "https://sansphoto.vercel.app/" // Link Demo
   }
 ];
 
@@ -43,6 +44,9 @@ const features = [
 ];
 
 function App() {
+  const [activeDemoUrl, setActiveDemoUrl] = useState<string | null>(null);
+  const [showDemoToast, setShowDemoToast] = useState(false);
+
   const handleBooking = () => {
     window.open('https://wa.me/6288235479203?text=Halo%20Sans%20Photobooth,%20saya%20ingin%20tanya%20pricelist', '_blank');
   };
@@ -60,11 +64,70 @@ function App() {
     }
   };
 
+  // Auto-hide toast after 5 seconds
+  useEffect(() => {
+    if (showDemoToast) {
+      const timer = setTimeout(() => {
+        setShowDemoToast(false);
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [showDemoToast]);
+
   return (
     <div className="font-sans text-black bg-white min-h-screen">
       <CustomCursor />
       <Navbar />
       <ChatWidget />
+
+      {/* --- DEMO POPUP MODAL --- */}
+      {activeDemoUrl && (
+        <div className="fixed inset-0 z-[9999] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 md:p-8 animate-fade-in">
+          <div className="w-full h-full max-w-7xl max-h-[90vh] bg-white border-2 border-black shadow-neo-lg flex flex-col relative">
+            
+            {/* Notification Toast Overlay */}
+            {showDemoToast && (
+              <div className="absolute top-16 left-1/2 transform -translate-x-1/2 z-50 animate-fade-in w-[90%] md:w-auto">
+                <div className="bg-sans-yellow border-2 border-black p-3 md:p-4 shadow-neo flex items-center gap-3 justify-center">
+                  <Maximize className="w-5 h-5 md:w-6 md:h-6 flex-shrink-0" />
+                  <span className="font-bold font-mono text-xs md:text-sm uppercase tracking-tight md:tracking-wide leading-tight">
+                    Tips: Klik Fullscreen di dalam aplikasi biar makin asik!
+                  </span>
+                </div>
+              </div>
+            )}
+
+            {/* Modal Header */}
+            <div className="bg-sans-purple border-b-2 border-black p-3 flex justify-between items-center text-white">
+               <div className="flex items-center gap-2">
+                 <Monitor size={18} />
+                 <span className="font-bold font-display uppercase tracking-wider text-sm md:text-base">Live Demo Preview</span>
+               </div>
+               <div className="flex gap-2">
+                 <button 
+                   onClick={() => setActiveDemoUrl(null)}
+                   className="p-1 hover:bg-white hover:text-red-600 border border-transparent hover:border-black transition-colors"
+                 >
+                   <X size={20} />
+                 </button>
+               </div>
+            </div>
+            
+            {/* Iframe Container */}
+            <div className="flex-1 bg-gray-100 relative overflow-hidden">
+               <div className="absolute inset-0 flex items-center justify-center text-gray-400 font-bold uppercase tracking-widest pointer-events-none z-0">
+                 Loading Experience...
+               </div>
+               <iframe 
+                 src={activeDemoUrl} 
+                 className="w-full h-full relative z-10"
+                 allow="camera; microphone; fullscreen; display-capture"
+                 title="Sans Photobooth Demo"
+               />
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* --- HERO SECTION --- */}
       <section id="home" className="relative h-screen w-full flex items-center justify-center overflow-hidden border-b-4 border-black bg-[#F3F4F6]">
@@ -196,8 +259,22 @@ function App() {
             {services.map((service, index) => (
               <div 
                 key={index} 
-                className="bg-white border-2 border-black p-6 shadow-neo hover:shadow-neo-lg hover:-translate-y-2 transition-all duration-200 flex flex-col cursor-scale"
+                className="bg-white border-2 border-black p-6 shadow-neo hover:shadow-neo-lg hover:-translate-y-2 transition-all duration-200 flex flex-col cursor-scale relative group"
               >
+                {/* TRY NOW BUTTON (Condition: Only if demoUrl exists) */}
+                {service.demoUrl && (
+                  <button 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setActiveDemoUrl(service.demoUrl!);
+                      setShowDemoToast(true);
+                    }}
+                    className="absolute top-0 right-0 m-3 bg-black text-white text-[10px] md:text-xs font-bold px-2 py-1 border border-white shadow-[2px_2px_0px_0px_rgba(0,0,0,0.5)] hover:shadow-none hover:translate-x-[1px] hover:translate-y-[1px] transition-all z-20 flex items-center gap-1 animate-pulse"
+                  >
+                    TRY NOW <ExternalLink size={10} />
+                  </button>
+                )}
+
                 <div className="w-12 h-12 bg-black text-white flex items-center justify-center mb-6 border-2 border-black shadow-[4px_4px_0px_0px_rgba(255,255,255,1)]">
                   {service.icon}
                 </div>

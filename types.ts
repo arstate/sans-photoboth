@@ -11,6 +11,7 @@ export interface ServiceItem {
   description: string;
   icon: ReactNode;
   tags: string[];
+  demoUrl?: string; // Optional URL for embed demo
 }
 
 export interface FeatureItem {
