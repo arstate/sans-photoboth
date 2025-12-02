@@ -172,7 +172,7 @@ function App() {
               <div className="flex gap-4">
                  <div className="flex-1 bg-white border-2 border-black p-4 text-center shadow-neo-sm hover:shadow-none transition-all hover:translate-x-[2px] hover:translate-y-[2px]">
                     <span className="block font-display font-black text-4xl text-sans-purple">500+</span>
-                    <span className="text-xs font-bold uppercase mt-1 block">Event Hajar</span>
+                    <span className="text-xs font-bold uppercase mt-1 block">Event di Hajar</span>
                  </div>
                  <div className="flex-1 bg-white border-2 border-black p-4 text-center shadow-neo-sm hover:shadow-none transition-all hover:translate-x-[2px] hover:translate-y-[2px]">
                     <span className="block font-display font-black text-4xl text-sans-pink">10k+</span>
@@ -225,7 +225,7 @@ function App() {
             <div className="w-full lg:w-1/2">
               <h2 className="font-display font-black text-5xl mb-8 leading-none">
                 KENAPA HARUS <br/>
-                <span className="text-sans-purple underline decoration-sans-yellow decoration-8 underline-offset-4">SANS PB?</span>
+                <span className="text-sans-purple underline decoration-sans-yellow decoration-8 underline-offset-4">SANS?</span>
               </h2>
               <div className="space-y-4">
                 {features.map((feature, idx) => (
