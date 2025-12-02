@@ -19,6 +19,21 @@ const ChatWidget = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [chatSession, setChatSession] = useState<Chat | null>(null);
 
+  // API KEYS LIST (Rotation System)
+  const API_KEYS = [
+    "AIzaSyCHVn95FnGTPtxMRRBXa_cHCteJKv3KGiY",
+    "AIzaSyDYJVMP0Pue7vodzWBeX0I06PgzYFoPJy8",
+    "AIzaSyB-ZDRLEvwxly7WOdX11n_u5d34wdqpxIw",
+    "AIzaSyDsJOd0dUNYwcIKOUdt1KBGdTwM7J7QQ1k",
+    "AIzaSyCBpztyFBeolgyAM_ZXQcsO0NSpwsuh1xM",
+    "AIzaSyD2mp7DPiHU_zXZdnK3nLsl1bsJTE7VdyY",
+    "AIzaSyD2mp7DPiHU_zXZdnK3nLsl1bsJTE7VdyY",
+    "AIzaSyC8TAGHcxgKV7MxpevwitVzaJ3WjVp-RLI"
+  ];
+
+  // Track current key index
+  const currentKeyIndex = useRef(0);
+
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const isDragging = useRef(false);
   const startX = useRef(0);
@@ -40,34 +55,44 @@ const ChatWidget = () => {
     scrollToBottom();
   }, [messages, isOpen]);
 
-  useEffect(() => {
-    const initChat = async () => {
-      try {
-        const apiKey = process.env.API_KEY || 'AIzaSyBPRdM3f8Mk63KOb4KkOI7vdOk1_NUKbaA';
-        if (!apiKey) return;
-        const ai = new GoogleGenAI({ apiKey });
-        const chat = ai.chats.create({
-          model: 'gemini-flash-lite-latest',
-          config: {
-            systemInstruction: `Anda adalah 'Sans AI', asisten virtual 'Sans Photobooth' Surabaya.
-            Style: Neo-Brutalist Gen-Z. Gunakan bahasa gaul, santai, to the point. Panggil user "Bro/Sist/Bestie".
-            Jangan terlalu formal.
-            
-            Info:
-            1. Event Photobooth: Wedding/Party, Sony Gear, Cetak Kilat.
-            2. Mobile: Fotografer keliling, softfile only.
-            3. Self Photo: Studio mandiri.
-            
-            PENTING: Kalau tanya HARGA, suruh WA ke 088235479203.
-            `,
-          },
-        });
-        setChatSession(chat);
-      } catch (error) {
-        console.error("Failed to init chat:", error);
+  // Helper to create a new session with specific key
+  const createChatSession = (keyIndex: number) => {
+    try {
+      // Ensure index is within bounds, wrap around or stop if needed, but here we stop at end
+      if (keyIndex >= API_KEYS.length) {
+        console.error("All API Keys exhausted");
+        return null;
       }
-    };
-    initChat();
+
+      const apiKey = API_KEYS[keyIndex];
+      const ai = new GoogleGenAI({ apiKey });
+      
+      return ai.chats.create({
+        model: 'gemini-flash-lite-latest',
+        config: {
+          systemInstruction: `Anda adalah 'Sans AI', asisten virtual 'Sans Photobooth' Surabaya.
+          Style: Neo-Brutalist Gen-Z. Gunakan bahasa gaul, santai, to the point. Panggil user "Bro/Sist/Bestie".
+          Jangan terlalu formal.
+          
+          Info:
+          1. Event Photobooth: Wedding/Party, Sony Alpha Gear, Cetak Kilat, Studio Lighting.
+          2. Mobile: Fotografer keliling, softfile only, direct share.
+          3. Self Photo: Studio mandiri.
+          
+          PENTING: Kalau tanya HARGA, selalu arahkan/suruh WA ke 088235479203.
+          `,
+        },
+      });
+    } catch (error) {
+      console.error("Error creating session:", error);
+      return null;
+    }
+  };
+
+  // Initialize first session
+  useEffect(() => {
+    const session = createChatSession(0);
+    if (session) setChatSession(session);
   }, []);
 
   const handleSend = async (textOverride?: string) => {
@@ -79,14 +104,54 @@ const ChatWidget = () => {
     setIsLoading(true);
 
     try {
-      if (chatSession) {
-        const result = await chatSession.sendMessage({ message: textToSend });
-        setMessages(prev => [...prev, { role: 'model', text: result.text }]);
-      } else {
-        setMessages(prev => [...prev, { role: 'model', text: 'Bentar loading AI...' }]);
+      let resultText = "";
+      let success = false;
+      let activeSession = chatSession;
+
+      // If session is missing (rare), try to create one
+      if (!activeSession) {
+        activeSession = createChatSession(currentKeyIndex.current);
       }
+
+      // RETRY LOOP LOGIC
+      // Try to send message. If fail, switch key, create new session, retry loop.
+      while (!success && currentKeyIndex.current < API_KEYS.length) {
+        if (!activeSession) {
+           currentKeyIndex.current++;
+           activeSession = createChatSession(currentKeyIndex.current);
+           continue; 
+        }
+
+        try {
+          const result = await activeSession.sendMessage({ message: textToSend });
+          resultText = result.text;
+          success = true;
+          
+          // Update the main state if we switched sessions successfully
+          if (activeSession !== chatSession) {
+            setChatSession(activeSession);
+          }
+        } catch (error) {
+          console.warn(`Key at index ${currentKeyIndex.current} failed. Switching to next key...`);
+          currentKeyIndex.current++; // Increment index
+          
+          if (currentKeyIndex.current < API_KEYS.length) {
+            // Create new session for the next attempt
+            activeSession = createChatSession(currentKeyIndex.current);
+          } else {
+            console.error("All API keys failed.");
+          }
+        }
+      }
+
+      if (success) {
+        setMessages(prev => [...prev, { role: 'model', text: resultText }]);
+      } else {
+        throw new Error("Service Unavailable");
+      }
+
     } catch (error) {
-      setMessages(prev => [...prev, { role: 'model', text: 'Error nih jaringan. Refresh coba.' }]);
+      setMessages(prev => [...prev, { role: 'model', text: 'Waduh, server lagi penuh banget nih bestie. Coba chat WhatsApp aja ya biar fast response! 🙏' }]);
     } finally {
       setIsLoading(false);
     }
