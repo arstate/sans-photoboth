@@ -61,7 +61,7 @@ function App() {
   };
 
   return (
-    <div className="font-sans text-black bg-white min-h-screen">
+    <div className="font-sans text-black bg-white min-h-screen overflow-x-hidden">
       <CustomCursor />
       <Navbar />
       <ChatWidget />
@@ -89,9 +89,9 @@ function App() {
           {/* Main Title - Responsive sizing to prevent cut-off */}
           <h1 className="font-display font-black text-black mb-6 leading-[0.9] tracking-tighter mix-blend-hard-light uppercase drop-shadow-[3px_3px_0px_rgba(255,255,255,1)] md:drop-shadow-[4px_4px_0px_rgba(255,255,255,1)]">
             <span className="block text-6xl md:text-8xl lg:text-9xl">SANS</span>
-            {/* Reduced text size to 11vw to fit Mobile Portrait without cutoff */}
+            {/* Reduced text size to 10vw to safely fit Mobile Portrait without cutoff */}
             <span 
-              className="block text-[11vw] md:text-8xl lg:text-9xl text-transparent bg-clip-text bg-gradient-to-r from-sans-purple via-sans-pink to-sans-yellow stroke-black" 
+              className="block text-[10vw] md:text-8xl lg:text-9xl text-transparent bg-clip-text bg-gradient-to-r from-sans-purple via-sans-pink to-sans-yellow stroke-black" 
               style={{ WebkitTextStroke: '1.5px black' }} 
             >
               PHOTOBOOTH

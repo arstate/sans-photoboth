@@ -43,7 +43,7 @@ const ChatWidget = () => {
   useEffect(() => {
     const initChat = async () => {
       try {
-        const apiKey = process.env.API_KEY || 'AIzaSyBwGpVbSSkq4TECh6H2I7jPcolBmiOInzE';
+        const apiKey = process.env.API_KEY || 'AIzaSyBPRdM3f8Mk63KOb4KkOI7vdOk1_NUKbaA';
         if (!apiKey) return;
         const ai = new GoogleGenAI({ apiKey });
         const chat = ai.chats.create({
@@ -146,7 +146,7 @@ const ChatWidget = () => {
         className={`
           relative origin-bottom-right transition-all duration-300 ease-in-out
           bg-white border-2 border-black shadow-neo-lg flex flex-col
-          w-[350px] md:w-[380px] h-[500px]
+          w-[calc(100vw-3rem)] max-w-[350px] md:w-[380px] md:max-w-none h-[500px] max-h-[80vh]
           ${isOpen ? 'scale-100 opacity-100 translate-y-0 pointer-events-auto' : 'scale-0 opacity-0 translate-y-10 pointer-events-none'}
         `}
         onWheel={(e) => e.stopPropagation()}

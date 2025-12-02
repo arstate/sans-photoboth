@@ -55,7 +55,7 @@ const Navbar = () => {
       <div className="container mx-auto px-4 md:px-6 flex justify-between items-center">
         {/* Logo - Full Name - Optimized for Mobile Single Line */}
         <a href="#" className="relative group" onClick={(e) => handleScrollTo(e, '#home')}>
-          <div className="font-display font-black text-sm md:text-xl tracking-tighter text-black uppercase bg-white border-2 border-black px-2 md:px-3 py-1 shadow-neo-sm hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all flex flex-row items-center gap-1 md:gap-2 leading-none whitespace-nowrap">
+          <div className="font-display font-black text-[10px] sm:text-sm md:text-xl tracking-tighter text-black uppercase bg-white border-2 border-black px-2 md:px-3 py-1 shadow-neo-sm hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all flex flex-row items-center gap-1 md:gap-2 leading-none whitespace-nowrap">
             <span>SANS</span>
             <span className="text-sans-purple">PHOTOBOOTH</span>
           </div>
