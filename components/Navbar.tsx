@@ -49,16 +49,15 @@ const Navbar = () => {
       className={`fixed top-0 left-0 w-full z-50 transition-all duration-200 border-b-2 border-black ${
         isScrolled
           ? 'py-3 bg-white/90 backdrop-blur-sm'
-          : 'py-5 bg-sans-yellow'
+          : 'py-4 md:py-5 bg-sans-yellow'
       }`}
     >
-      <div className="container mx-auto px-6 flex justify-between items-center">
-        {/* Logo - Full Name */}
+      <div className="container mx-auto px-4 md:px-6 flex justify-between items-center">
+        {/* Logo - Full Name - Optimized for Mobile Single Line */}
         <a href="#" className="relative group" onClick={(e) => handleScrollTo(e, '#home')}>
-          <div className="font-display font-black text-lg md:text-xl tracking-tighter text-black uppercase bg-white border-2 border-black px-3 py-1 shadow-neo-sm hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all flex flex-col md:flex-row md:gap-2 leading-none">
+          <div className="font-display font-black text-sm md:text-xl tracking-tighter text-black uppercase bg-white border-2 border-black px-2 md:px-3 py-1 shadow-neo-sm hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all flex flex-row items-center gap-1 md:gap-2 leading-none whitespace-nowrap">
             <span>SANS</span>
-            <span className="text-sans-purple md:hidden">PHOTOBOOTH</span>
-            <span className="text-sans-purple hidden md:inline">PHOTOBOOTH</span>
+            <span className="text-sans-purple">PHOTOBOOTH</span>
           </div>
         </a>
 
@@ -88,9 +87,9 @@ const Navbar = () => {
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
         >
           {isMobileMenuOpen ? (
-            <X className="text-black" size={24} />
+            <X className="text-black" size={20} />
           ) : (
-            <Menu className="text-black" size={24} />
+            <Menu className="text-black" size={20} />
           )}
         </button>
       </div>

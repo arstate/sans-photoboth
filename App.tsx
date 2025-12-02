@@ -89,10 +89,10 @@ function App() {
           {/* Main Title - Responsive sizing to prevent cut-off */}
           <h1 className="font-display font-black text-black mb-6 leading-[0.9] tracking-tighter mix-blend-hard-light uppercase drop-shadow-[3px_3px_0px_rgba(255,255,255,1)] md:drop-shadow-[4px_4px_0px_rgba(255,255,255,1)]">
             <span className="block text-6xl md:text-8xl lg:text-9xl">SANS</span>
-            {/* Use fluid typography (vw) for the long word to fit mobile screens */}
+            {/* Reduced text size to 11vw to fit Mobile Portrait without cutoff */}
             <span 
-              className="block text-[13vw] md:text-8xl lg:text-9xl text-transparent bg-clip-text bg-gradient-to-r from-sans-purple via-sans-pink to-sans-yellow stroke-black" 
-              style={{ WebkitTextStroke: '1.5px black' }} // Thinner stroke on mobile for readability
+              className="block text-[11vw] md:text-8xl lg:text-9xl text-transparent bg-clip-text bg-gradient-to-r from-sans-purple via-sans-pink to-sans-yellow stroke-black" 
+              style={{ WebkitTextStroke: '1.5px black' }} 
             >
               PHOTOBOOTH
             </span>
@@ -114,8 +114,8 @@ function App() {
       </section>
 
       {/* --- RUNNING TEXT MARQUEE --- */}
-      {/* Sticky top adjusted for standard Navbar height (~68px-80px) */}
-      <div className="bg-sans-purple border-b-4 border-black overflow-hidden py-3 whitespace-nowrap sticky top-[64px] md:top-[72px] z-40">
+      {/* Adjusted sticky top to match Scrolled Navbar Height (approx 50-60px) */}
+      <div className="bg-sans-purple border-b-4 border-black overflow-hidden py-3 whitespace-nowrap sticky top-[50px] md:top-[60px] z-40">
         {/* Slowed down animation to 40s */}
         <div className="inline-block animate-[marquee_40s_linear_infinite]">
           {[...Array(10)].map((_, i) => (
@@ -265,7 +265,7 @@ function App() {
               {[6, 7, 8, 9, 10, 11].map((num, idx) => (
                 <div key={num} className={`relative border-2 border-black bg-white p-2 shadow-neo hover:shadow-none hover:translate-x-[4px] hover:translate-y-[4px] transition-all cursor-view group ${idx === 1 || idx === 5 ? 'md:col-span-2' : ''}`}>
                   <div className="w-full h-64 overflow-hidden border border-black">
-                    <img src={`https://picsum.photos/${idx === 1 || idx === 5 ? '800' : '400'}/600?random=${num}`} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 grayscale group-hover:grayscale-0" alt="Gallery" />
+                    <img src={`https://picsum.photos/${idx === 1 || idx === 5 ? '800' : '600'}/600?random=${num}`} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 grayscale group-hover:grayscale-0" alt="Gallery" />
                   </div>
                   <div className="absolute top-4 right-4 bg-white border-2 border-black p-1 opacity-0 group-hover:opacity-100 transition-opacity">
                     <Instagram className="w-5 h-5" />
