@@ -116,10 +116,11 @@ function App() {
       {/* --- RUNNING TEXT MARQUEE --- */}
       {/* 
           Sticky positioning adjustment:
-          Mobile Navbar Height: ~58px (py-3 + content + borders)
-          Desktop Navbar Height: ~67px
+          Reduced top values slightly to ensure overlap under navbar (no gaps).
+          Mobile: top-[52px]
+          Desktop: top-[64px]
       */}
-      <div className="bg-sans-purple border-b-4 border-black overflow-hidden py-3 whitespace-nowrap sticky top-[58px] md:top-[67px] z-40">
+      <div className="bg-sans-purple border-b-4 border-black overflow-hidden py-3 whitespace-nowrap sticky top-[52px] md:top-[64px] z-40">
         {/* Slowed down animation to 40s */}
         <div className="inline-block animate-[marquee_40s_linear_infinite]">
           {[...Array(10)].map((_, i) => (
