@@ -114,8 +114,12 @@ function App() {
       </section>
 
       {/* --- RUNNING TEXT MARQUEE --- */}
-      {/* Adjusted sticky top to match Scrolled Navbar Height (approx 50-60px) */}
-      <div className="bg-sans-purple border-b-4 border-black overflow-hidden py-3 whitespace-nowrap sticky top-[50px] md:top-[60px] z-40">
+      {/* 
+          Sticky positioning adjustment:
+          Mobile Navbar Height: ~58px (py-3 + content + borders)
+          Desktop Navbar Height: ~67px
+      */}
+      <div className="bg-sans-purple border-b-4 border-black overflow-hidden py-3 whitespace-nowrap sticky top-[58px] md:top-[67px] z-40">
         {/* Slowed down animation to 40s */}
         <div className="inline-block animate-[marquee_40s_linear_infinite]">
           {[...Array(10)].map((_, i) => (
@@ -286,7 +290,8 @@ function App() {
         <div className="container mx-auto px-6">
           <div className="flex flex-col md:flex-row justify-between items-start gap-12 mb-16">
             <div className="md:w-1/3">
-              <h3 className="font-display font-black text-4xl tracking-tighter text-white mb-4 uppercase">
+              {/* Responsive Text Size to avoid cropping on mobile */}
+              <h3 className="font-display font-black text-2xl sm:text-3xl md:text-4xl tracking-tighter text-white mb-4 uppercase leading-none break-words">
                 SANS<span className="text-sans-purple">.</span>PHOTOBOOTH
               </h3>
               <p className="text-gray-400 mb-6 font-mono text-sm border-l-2 border-sans-purple pl-4">
