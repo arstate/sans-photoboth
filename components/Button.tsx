@@ -12,12 +12,18 @@ const Button: React.FC<ButtonProps> = ({
   className = '', 
   ...props 
 }) => {
-  const baseStyles = "inline-flex items-center justify-center px-8 py-3 rounded-full font-bold transition-all duration-300 transform hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-offset-2";
+  // Base: Bold border, hard shadow, no rounded corners usually (or small), uppercase
+  const baseStyles = "inline-flex items-center justify-center px-8 py-3 font-display font-bold text-sm tracking-wider uppercase border-2 border-black transition-all duration-150 active:translate-x-1 active:translate-y-1 active:shadow-none focus:outline-none";
   
   const variants = {
-    primary: "bg-sans-purple text-white shadow-lg shadow-purple-200 hover:shadow-purple-400 focus:ring-sans-purple",
-    secondary: "bg-sans-yellow text-sans-purple shadow-lg shadow-yellow-100 hover:bg-yellow-300 hover:shadow-yellow-300 focus:ring-sans-yellow",
-    outline: "border-2 border-sans-purple text-sans-purple hover:bg-sans-purple hover:text-white focus:ring-sans-purple"
+    // Primary: Purple bg, Black text or White text, hard shadow
+    primary: "bg-sans-purple text-white shadow-neo hover:bg-purple-600 hover:shadow-neo",
+    
+    // Secondary: Acid Yellow bg, Black text
+    secondary: "bg-sans-yellow text-black shadow-neo hover:bg-yellow-300 hover:shadow-neo",
+    
+    // Outline: White bg, Black text
+    outline: "bg-white text-black shadow-neo hover:bg-gray-50 hover:shadow-neo"
   };
 
   return (

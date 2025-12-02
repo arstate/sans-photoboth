@@ -3,36 +3,43 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- Force Browser to render in light mode only -->
     <meta name="color-scheme" content="light">
     <title>Sans Photobooth - Tiap Frame, Ada Cerita!</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&family=Poppins:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend+Mega:wght@300;400;700;900&family=Space+Grotesk:wght@300;400;500;700&display=swap" rel="stylesheet">
     <script>
       tailwind.config = {
-        // Force Tailwind to use 'class' strategy instead of 'media' (system settings)
-        // Since we don't add 'dark' class to html, it stays light forever.
         darkMode: 'class', 
         theme: {
           extend: {
             fontFamily: {
-              sans: ['Poppins', 'sans-serif'],
-              display: ['Montserrat', 'sans-serif'],
+              sans: ['Space Grotesk', 'sans-serif'],
+              display: ['Lexend Mega', 'sans-serif'],
             },
             colors: {
               sans: {
-                purple: '#6D28D9', // Violet 700
-                lightPurple: '#E9D5FF', // Purple 200
-                yellow: '#FACC15', // Yellow 400
-                dark: '#1e1b4b', // Indigo 950
-                bg: '#FAFAFA', // Changed to standard soft white for better consistency with Hero3D
+                purple: '#8B5CF6', // Vivid Violet
+                lightPurple: '#DDD6FE', 
+                yellow: '#FFD700', // PURE YELLOW (Ganti dari Lime #CCFF00)
+                pink: '#FF0099', // Hot Pink
+                dark: '#000000', // Pure Black
+                bg: '#FFFFFF',
               }
             },
+            boxShadow: {
+              'neo': '5px 5px 0px 0px rgba(0,0,0,1)',
+              'neo-sm': '3px 3px 0px 0px rgba(0,0,0,1)',
+              'neo-lg': '8px 8px 0px 0px rgba(0,0,0,1)',
+            },
             borderRadius: {
-              '4xl': '2.5rem',
+              'none': '0px',
+              'sm': '0.125rem',
             },
             animation: {
-              'fade-in': 'fadeIn 1s ease-out forwards',
+              'fade-in': 'fadeIn 0.5s ease-out forwards',
+              'bounce-slow': 'bounce 3s infinite',
             },
             keyframes: {
               fadeIn: {
@@ -45,57 +52,48 @@
       }
     </script>
     <style>
-      /* Force Light Mode for Browser Default Elements (Scrollbars, Inputs) */
       :root {
         color-scheme: light;
       }
-
-      /* Smooth Scrolling */
       html {
         scroll-behavior: smooth;
-        scroll-padding-top: 80px; /* Jarak aman untuk sticky navbar */
+        scroll-padding-top: 100px;
+        background-color: #f0f0f0;
+        background-image: radial-gradient(#000 1px, transparent 1px);
+        background-size: 20px 20px;
       }
-      /* Custom Scrollbar for Body */
       body::-webkit-scrollbar {
-        width: 8px;
-      }
-      body::-webkit-scrollbar-track {
-        background: #f1f1f1;
+        width: 12px;
+        background: #000;
+        border-left: 2px solid #000;
       }
       body::-webkit-scrollbar-thumb {
-        background: #C4B5FD;
-        border-radius: 10px;
+        background: #FFD700; /* Updated to Yellow */
+        border: 2px solid #000;
       }
       body::-webkit-scrollbar-thumb:hover {
-        background: #6D28D9;
+        background: #8B5CF6;
       }
 
-      /* Custom Scrollbar Utility for specific containers (like Chat) */
       .custom-scrollbar::-webkit-scrollbar {
-        width: 6px;
+        width: 8px;
       }
       .custom-scrollbar::-webkit-scrollbar-track {
-        background: transparent;
+        background: #fff;
+        border-left: 2px solid #000;
       }
       .custom-scrollbar::-webkit-scrollbar-thumb {
-        background: #C4B5FD;
-        border-radius: 10px;
-      }
-      .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-        background: #6D28D9;
+        background: #000;
       }
 
-      /* Utility to hide scrollbar for horizontal scrolling areas */
       .no-scrollbar::-webkit-scrollbar {
         display: none;
       }
       .no-scrollbar {
-        -ms-overflow-style: none;  /* IE and Edge */
-        scrollbar-width: none;  /* Firefox */
+        -ms-overflow-style: none;
+        scrollbar-width: none;
       }
 
-      /* Hide default cursor only on devices that support hover (Desktop) AND when app is loaded */
-      /* This prevents invisible cursor if JS crashes */
       @media (hover: hover) and (pointer: fine) {
         body:has(#root > div), 
         a, button, input, select {
@@ -118,9 +116,8 @@
 }
 </script>
 </head>
-  <body class="bg-sans-bg text-gray-800 antialiased overflow-x-hidden selection:bg-sans-yellow selection:text-sans-purple">
+  <body class="bg-sans-bg text-black antialiased overflow-x-hidden selection:bg-sans-pink selection:text-white">
     <div id="root"></div>
-    <!-- VITAL: Script tag to load the React Application -->
     <script type="module" src="./index.tsx"></script>
   </body>
 </html>

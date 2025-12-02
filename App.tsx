@@ -4,42 +4,42 @@ import Hero3D from './components/Hero3D';
 import Button from './components/Button';
 import CustomCursor from './components/CustomCursor';
 import ChatWidget from './components/ChatWidget';
-import { Camera, Zap, Users, Monitor, Instagram, CheckCircle2, MapPin, Phone } from 'lucide-react';
+import { Camera, Zap, Users, Monitor, Instagram, Check, MapPin, Phone, Star, ArrowRight } from 'lucide-react';
 import { ServiceItem } from './types';
 
 // Data Definitions
 const services: ServiceItem[] = [
   {
     title: "Event Photobooth",
-    description: "Solusi klasik untuk Wedding, Gathering, atau Sweet17. Menggunakan kamera Sony profesional & Studio Lighting.",
-    icon: <Camera className="w-8 h-8 text-white" />,
-    tags: ["Unlimited Print", "Custom Frame", "Fun Props"]
+    description: "Wedding, Gathering, Sweet17? Gas! Pake Sony Alpha + Studio Lighting biar muka lo glowing.",
+    icon: <Camera className="w-6 h-6" />,
+    tags: ["Unlimited Print", "Custom Frame"]
   },
   {
-    title: "Mobile Photobooth",
-    description: "Fotografer kami berkeliling (Roving) menangkap momen candid tamu Anda. Jemput bola, tanpa antre!",
-    icon: <Users className="w-8 h-8 text-white" />,
-    tags: ["Direct Share", "Candid", "Interactive"]
+    title: "Mobile / Roving",
+    description: "Fotografer kita keliling nyamperin tamu. Candid moment dapet, gak pake antre.",
+    icon: <Users className="w-6 h-6" />,
+    tags: ["Direct Share", "Candid Style"]
   },
   {
     title: "Self Photo Studio",
-    description: "Studio mandiri dengan remote clicker. Privasi penuh untuk berekspresi bebas bersama bestie.",
-    icon: <Zap className="w-8 h-8 text-white" />,
-    tags: ["Privacy", "Retouch", "High Gen-Z Vibe"]
+    description: "Studio mandiri, remote di tangan. Bebas gaya gila-gilaan tanpa diliatin abang foto.",
+    icon: <Zap className="w-6 h-6" />,
+    tags: ["Privacy", "Gen-Z Vibe"]
   },
   {
-    title: "Software Solution",
-    description: "Layanan B2B. Kami menyediakan lisensi software & sistem photobooth untuk vendor event lainnya.",
-    icon: <Monitor className="w-8 h-8 text-white" />,
-    tags: ["B2B", "White Label", "Tech Support"]
+    title: "Software B2B",
+    description: "Vendor lain mau pake sistem kita? Bisa banget. White label available.",
+    icon: <Monitor className="w-6 h-6" />,
+    tags: ["Lisensi", "Tech Support"]
   }
 ];
 
 const features = [
-  "Hasil Foto Super HD & Glowing",
-  "Share Softfile Instan via QR Code",
-  "Basecamp Surabaya, Siap Keliling Jatim",
-  "Template Desain Story-Driven"
+  "Hasil Foto Super HD",
+  "Share Softfile QR Code",
+  "Basecamp Surabaya",
+  "Desain Frame Estetik"
 ];
 
 function App() {
@@ -61,85 +61,117 @@ function App() {
   };
 
   return (
-    <div className="font-sans text-gray-800">
+    <div className="font-sans text-black bg-white min-h-screen">
       <CustomCursor />
       <Navbar />
       <ChatWidget />
 
       {/* --- HERO SECTION --- */}
-      <section id="home" className="relative h-screen w-full flex items-center justify-center overflow-hidden">
-        <Hero3D />
-        <div className="relative z-10 text-center px-6 max-w-4xl mx-auto mt-16">
-          <div className="inline-block mb-4 animate-fade-in">
-            <span className="px-4 py-1.5 rounded-full bg-purple-100 text-sans-purple font-bold text-xs md:text-sm tracking-widest uppercase shadow-sm">
+      <section id="home" className="relative h-screen w-full flex items-center justify-center overflow-hidden border-b-4 border-black bg-[#F3F4F6]">
+        <div className="absolute inset-0 z-0">
+           <Hero3D />
+        </div>
+        
+        {/* Decorative Grid Overlay */}
+        <div className="absolute inset-0 pointer-events-none opacity-20" 
+             style={{ backgroundImage: 'linear-gradient(#000 1px, transparent 1px), linear-gradient(90deg, #000 1px, transparent 1px)', backgroundSize: '40px 40px' }}>
+        </div>
+
+        <div className="relative z-10 text-center px-4 w-full max-w-7xl mx-auto mt-20 md:mt-16">
+          <div className="inline-flex items-center gap-2 mb-6 animate-fade-in bg-white border-2 border-black px-4 py-2 shadow-neo-sm transform -rotate-2 hover:rotate-0 transition-transform">
+            <Star className="w-4 h-4 text-sans-purple fill-current" />
+            <span className="text-black font-bold text-xs md:text-sm tracking-widest uppercase font-display">
               Surabaya Premium Photobooth
             </span>
+            <Star className="w-4 h-4 text-sans-purple fill-current" />
           </div>
-          <h1 className="font-display font-black text-5xl md:text-7xl lg:text-8xl text-gray-900 mb-6 leading-tight drop-shadow-sm">
-            SANS<br />PHOTOBOOTH
-          </h1>
-          <p className="text-gray-600 text-lg md:text-2xl mb-10 max-w-2xl mx-auto font-light leading-relaxed">
-            Tiap Frame, Ada Cerita! Abadikan momen serumu dengan kualitas studio.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            {/* Tombol Booking: Hover jadi Kuning Teks Ungu */}
-            <Button 
-              variant="primary" 
-              onClick={handleBooking} 
-              className="shadow-purple-200 shadow-xl hover:bg-sans-yellow hover:text-sans-purple hover:shadow-yellow-200"
+          
+          {/* Main Title - Responsive sizing to prevent cut-off */}
+          <h1 className="font-display font-black text-black mb-6 leading-[0.9] tracking-tighter mix-blend-hard-light uppercase drop-shadow-[3px_3px_0px_rgba(255,255,255,1)] md:drop-shadow-[4px_4px_0px_rgba(255,255,255,1)]">
+            <span className="block text-6xl md:text-8xl lg:text-9xl">SANS</span>
+            {/* Use fluid typography (vw) for the long word to fit mobile screens */}
+            <span 
+              className="block text-[13vw] md:text-8xl lg:text-9xl text-transparent bg-clip-text bg-gradient-to-r from-sans-purple via-sans-pink to-sans-yellow stroke-black" 
+              style={{ WebkitTextStroke: '1.5px black' }} // Thinner stroke on mobile for readability
             >
+              PHOTOBOOTH
+            </span>
+          </h1>
+          
+          <p className="bg-white inline-block border-2 border-black px-4 py-2 text-black text-base md:text-xl mb-10 max-w-2xl mx-auto font-medium shadow-neo-sm">
+            Tiap Frame, Ada Cerita! Abadikan momen gila lo sekarang.
+          </p>
+          
+          <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center">
+            <Button variant="secondary" onClick={handleBooking} className="text-lg px-10 py-4">
               Booking Sekarang
             </Button>
-            
-            {/* Tombol Portfolio: Hover jadi Ungu Solid Teks Putih + Shadow */}
-            <Button 
-              variant="outline" 
-              onClick={scrollToPortfolio}
-              className="border-gray-300 text-gray-500 hover:bg-sans-purple hover:text-white hover:border-transparent hover:shadow-xl hover:shadow-purple-200"
-            >
+            <Button variant="outline" onClick={scrollToPortfolio} className="text-lg px-10 py-4">
               Lihat Portfolio
             </Button>
           </div>
         </div>
       </section>
 
+      {/* --- RUNNING TEXT MARQUEE --- */}
+      {/* Sticky top adjusted for standard Navbar height (~68px-80px) */}
+      <div className="bg-sans-purple border-b-4 border-black overflow-hidden py-3 whitespace-nowrap sticky top-[64px] md:top-[72px] z-40">
+        {/* Slowed down animation to 40s */}
+        <div className="inline-block animate-[marquee_40s_linear_infinite]">
+          {[...Array(10)].map((_, i) => (
+             <span key={i} className="text-white font-display font-black text-xl mx-8 uppercase tracking-wider">
+               Tiap Frame Ada Cerita <span className="text-sans-yellow mx-2">★</span> Capture Your Moment <span className="text-sans-yellow mx-2">★</span>
+             </span>
+          ))}
+        </div>
+      </div>
+      <style>{`
+        @keyframes marquee {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
+        }
+      `}</style>
+
       {/* --- ABOUT SECTION --- */}
-      <section id="about" className="py-24 bg-sans-bg relative">
+      <section id="about" className="py-24 bg-white relative">
         <div className="container mx-auto px-6">
-          <div className="bg-white rounded-[2.5rem] p-8 md:p-16 shadow-xl border border-gray-100 flex flex-col md:flex-row items-center gap-12">
-            <div className="w-full md:w-1/2">
-               <div className="relative">
-                 <div className="absolute inset-0 bg-sans-yellow rounded-3xl transform rotate-3 translate-x-2 translate-y-2"></div>
+          <div className="flex flex-col md:flex-row gap-0 md:gap-8 items-stretch">
+            {/* Image Card */}
+            <div className="w-full md:w-1/2 relative group">
+               <div className="absolute inset-0 bg-sans-dark translate-x-4 translate-y-4 border-2 border-black"></div>
+               <div className="relative h-full bg-white border-2 border-black p-2 z-10 transition-transform hover:-translate-y-1 hover:-translate-x-1">
                  <img 
                    src="https://picsum.photos/600/400?random=1" 
                    alt="Sans Team" 
-                   className="relative rounded-3xl w-full object-cover shadow-lg cursor-scale"
+                   className="w-full h-full object-cover border-2 border-black grayscale group-hover:grayscale-0 transition-all duration-300"
                  />
                </div>
             </div>
-            <div className="w-full md:w-1/2">
-              <h3 className="text-sans-purple font-bold uppercase tracking-wider mb-2">Tentang Kami</h3>
-              <h2 className="font-display font-bold text-3xl md:text-4xl mb-6 text-gray-900">
-                Lebih dari Sekadar Foto,<br/>Kami Menangkap <span className="text-sans-purple underline decoration-sans-yellow decoration-4 underline-offset-4">Emosi.</span>
+            
+            {/* Text Content */}
+            <div className="w-full md:w-1/2 mt-12 md:mt-0 flex flex-col justify-center">
+              <div className="bg-sans-yellow border-2 border-black inline-block px-4 py-1 mb-4 shadow-neo-sm w-max">
+                <h3 className="font-bold uppercase tracking-wider text-sm">Tentang Kami</h3>
+              </div>
+              <h2 className="font-display font-black text-4xl md:text-5xl mb-6 leading-tight">
+                BUKAN PHOTOBOOTH <br/>
+                <span className="bg-sans-purple text-white px-2">BIASA.</span>
               </h2>
-              <p className="text-gray-600 leading-relaxed mb-6 text-lg">
-                Sans Photobooth hadir di Surabaya dengan misi sederhana: membuat setiap tamu merasa seperti bintang. 
-                Dengan filosofi <strong>"Tiap Frame, Ada Cerita"</strong>, kami menggabungkan teknologi fotografi terkini 
-                dengan desain visual yang estetik ala Gen-Z. 
+              <p className="text-black font-medium leading-relaxed mb-6 text-lg border-l-4 border-sans-pink pl-4">
+                Sans Photobooth hadir buat lo yang bosen sama foto kaku. Misi kita simpel: bikin lo berasa kayak rockstar di event sendiri.
               </p>
-              <p className="text-gray-600 leading-relaxed mb-8">
-                Baik itu pernikahan sakral atau pesta ulang tahun yang pecah, tim kami siap memastikan 
-                setiap senyum terabadikan dengan sempurna.
+              <p className="text-gray-600 leading-relaxed mb-8 font-sans">
+                Filosofi kita <strong>"Tiap Frame, Ada Cerita"</strong>. Gabungin teknologi canggih, lighting studio pro, dan desain frame yang gak norak. Gas pol buat wedding, sweet17, atau gathering kantor.
               </p>
+              
               <div className="flex gap-4">
-                 <div className="text-center">
-                    <span className="block font-bold text-3xl text-sans-purple">500+</span>
-                    <span className="text-sm text-gray-500">Event Handled</span>
+                 <div className="flex-1 bg-white border-2 border-black p-4 text-center shadow-neo-sm hover:shadow-none transition-all hover:translate-x-[2px] hover:translate-y-[2px]">
+                    <span className="block font-display font-black text-4xl text-sans-purple">500+</span>
+                    <span className="text-xs font-bold uppercase mt-1 block">Event Hajar</span>
                  </div>
-                 <div className="w-px bg-gray-300 h-12"></div>
-                 <div className="text-center">
-                    <span className="block font-bold text-3xl text-sans-purple">10k+</span>
-                    <span className="text-sm text-gray-500">Happy Faces</span>
+                 <div className="flex-1 bg-white border-2 border-black p-4 text-center shadow-neo-sm hover:shadow-none transition-all hover:translate-x-[2px] hover:translate-y-[2px]">
+                    <span className="block font-display font-black text-4xl text-sans-pink">10k+</span>
+                    <span className="text-xs font-bold uppercase mt-1 block">Happy Faces</span>
                  </div>
               </div>
             </div>
@@ -148,31 +180,29 @@ function App() {
       </section>
 
       {/* --- SERVICES SECTION --- */}
-      <section id="services" className="py-24 bg-white">
+      <section id="services" className="py-24 bg-sans-yellow border-y-4 border-black">
         <div className="container mx-auto px-6">
-          <div className="text-center mb-16">
-            <h2 className="font-display font-black text-4xl md:text-5xl text-sans-purple mb-4">Layanan Kami</h2>
-            <p className="text-gray-500 text-lg max-w-xl mx-auto">Pilih paket yang paling pas buat acaramu. Semuanya garansi keren!</p>
+          <div className="flex justify-between items-end mb-16 border-b-4 border-black pb-4">
+            <h2 className="font-display font-black text-5xl md:text-6xl text-black">LAYANAN</h2>
+            <p className="hidden md:block font-bold text-xl uppercase max-w-md text-right">Pilih paket sesuka hati. Garansi keren 100%.</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {services.map((service, index) => (
               <div 
                 key={index} 
-                className="group bg-sans-bg rounded-3xl p-6 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:shadow-purple-100 border border-transparent hover:border-sans-purple/20 cursor-scale"
+                className="bg-white border-2 border-black p-6 shadow-neo hover:shadow-neo-lg hover:-translate-y-2 transition-all duration-200 flex flex-col cursor-scale"
               >
-                <div className="w-16 h-16 rounded-2xl bg-sans-purple flex items-center justify-center mb-6 shadow-lg group-hover:bg-sans-yellow group-hover:text-sans-purple transition-colors duration-300">
-                  {React.cloneElement(service.icon as React.ReactElement<{ className?: string }>, { 
-                    className: "w-8 h-8 text-white group-hover:text-sans-purple transition-colors" 
-                  })}
+                <div className="w-12 h-12 bg-black text-white flex items-center justify-center mb-6 border-2 border-black shadow-[4px_4px_0px_0px_rgba(255,255,255,1)]">
+                  {service.icon}
                 </div>
-                <h3 className="font-display font-bold text-xl mb-3 text-gray-900">{service.title}</h3>
-                <p className="text-gray-500 mb-6 text-sm leading-relaxed min-h-[80px]">
+                <h3 className="font-display font-bold text-2xl mb-3 uppercase leading-none">{service.title}</h3>
+                <p className="text-gray-800 mb-6 text-sm font-medium border-t-2 border-black pt-3 mt-auto">
                   {service.description}
                 </p>
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-2 mt-auto">
                   {service.tags.map(tag => (
-                    <span key={tag} className="text-xs font-semibold bg-white px-3 py-1 rounded-full text-sans-purple border border-purple-100">
+                    <span key={tag} className="text-[10px] font-bold bg-sans-lightPurple px-2 py-1 border border-black text-black uppercase">
                       {tag}
                     </span>
                   ))}
@@ -184,136 +214,116 @@ function App() {
       </section>
 
       {/* --- FEATURES SECTION --- */}
-      <section id="features" className="py-24 bg-sans-dark text-white relative overflow-hidden">
-        {/* Decorative background elements */}
-        <div className="absolute top-0 right-0 w-64 h-64 bg-sans-purple opacity-20 blur-3xl rounded-full translate-x-1/2 -translate-y-1/2"></div>
-        <div className="absolute bottom-0 left-0 w-80 h-80 bg-sans-yellow opacity-10 blur-3xl rounded-full -translate-x-1/3 translate-y-1/3"></div>
-
-        <div className="container mx-auto px-6 relative z-10">
-          <div className="flex flex-col lg:flex-row items-center gap-16">
+      <section id="features" className="py-24 bg-white relative">
+        <div className="container mx-auto px-6">
+          <div className="flex flex-col lg:flex-row gap-16">
             <div className="w-full lg:w-1/2">
-              <h2 className="font-display font-black text-4xl md:text-5xl mb-8 leading-tight">
-                Kenapa Harus <br/><span className="text-sans-yellow">Sans Photobooth?</span>
+              <h2 className="font-display font-black text-5xl mb-8 leading-none">
+                KENAPA HARUS <br/>
+                <span className="text-sans-purple underline decoration-sans-yellow decoration-8 underline-offset-4">SANS PB?</span>
               </h2>
-              <div className="space-y-6">
+              <div className="space-y-4">
                 {features.map((feature, idx) => (
-                  <div key={idx} className="flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 transition-colors cursor-scale">
-                    <div className="flex-shrink-0 w-10 h-10 rounded-full bg-green-400 flex items-center justify-center text-sans-dark">
-                      <CheckCircle2 size={20} strokeWidth={3} />
+                  <div key={idx} className="group flex items-center gap-4 p-4 border-2 border-black bg-white shadow-neo-sm hover:bg-black hover:text-white transition-colors cursor-scale">
+                    <div className="flex-shrink-0 w-8 h-8 bg-sans-yellow border-2 border-black flex items-center justify-center text-black group-hover:bg-white">
+                      <Check size={20} strokeWidth={4} />
                     </div>
-                    <span className="font-semibold text-lg">{feature}</span>
+                    <span className="font-bold text-lg uppercase tracking-wide">{feature}</span>
                   </div>
                 ))}
               </div>
               <div className="mt-10">
-                <Button variant="secondary" onClick={handleBooking}>Konsultasi Gratis</Button>
+                <Button variant="primary" onClick={handleBooking} className="w-full md:w-auto">
+                   Konsultasi Gratis <ArrowRight className="ml-2 w-5 h-5" />
+                </Button>
               </div>
             </div>
-            <div className="w-full lg:w-1/2 grid grid-cols-2 gap-4">
-               <img src="https://picsum.photos/300/400?random=2" className="rounded-3xl w-full h-64 object-cover transform translate-y-8 cursor-scale" alt="Feature 1" />
-               <img src="https://picsum.photos/300/400?random=3" className="rounded-3xl w-full h-64 object-cover cursor-scale" alt="Feature 2" />
-               <img src="https://picsum.photos/300/400?random=4" className="rounded-3xl w-full h-64 object-cover transform translate-y-8 cursor-scale" alt="Feature 3" />
-               <img src="https://picsum.photos/300/400?random=5" className="rounded-3xl w-full h-64 object-cover cursor-scale" alt="Feature 4" />
+            
+            <div className="w-full lg:w-1/2 relative">
+               <div className="grid grid-cols-2 gap-4">
+                  <div className="bg-sans-pink border-2 border-black p-2 shadow-neo h-64 rotate-2 z-10">
+                     <img src="https://picsum.photos/300/400?random=2" className="w-full h-full object-cover border border-black grayscale hover:grayscale-0 transition-all" alt="Feature 1" />
+                  </div>
+                  <div className="bg-sans-yellow border-2 border-black p-2 shadow-neo h-64 -rotate-3 mt-12 z-0">
+                     <img src="https://picsum.photos/300/400?random=3" className="w-full h-full object-cover border border-black grayscale hover:grayscale-0 transition-all" alt="Feature 2" />
+                  </div>
+               </div>
             </div>
           </div>
         </div>
       </section>
 
       {/* --- PORTFOLIO SECTION --- */}
-      <section id="portfolio" className="py-24 bg-sans-bg">
+      <section id="portfolio" className="py-24 bg-[#F3F4F6] border-t-4 border-black">
         <div className="container mx-auto px-6 text-center">
-           <h2 className="font-display font-bold text-4xl mb-2">Galeri Momen</h2>
-           <p className="text-gray-500 mb-12">Intip keseruan teman-teman Sans yang sudah cobain!</p>
+           <div className="inline-block bg-black text-white px-6 py-2 mb-4 border-2 border-sans-purple shadow-neo-sm transform -rotate-1">
+             <h2 className="font-display font-bold text-3xl uppercase">Galeri Momen</h2>
+           </div>
+           <p className="text-black font-bold mb-12 uppercase tracking-wide">Intip keseruan teman-teman Sans yang sudah cobain!</p>
            
            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
-              {/* NOTE: Ubah cursor-scale menjadi cursor-view hanya untuk elemen galeri agar teks "Lihat" muncul */}
-              <div className="rounded-2xl overflow-hidden h-64 group relative cursor-view">
-                <img src="https://picsum.photos/400/600?random=6" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" alt="Gallery 1" />
-                <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                   <Instagram className="text-white w-8 h-8" />
+              {[6, 7, 8, 9, 10, 11].map((num, idx) => (
+                <div key={num} className={`relative border-2 border-black bg-white p-2 shadow-neo hover:shadow-none hover:translate-x-[4px] hover:translate-y-[4px] transition-all cursor-view group ${idx === 1 || idx === 5 ? 'md:col-span-2' : ''}`}>
+                  <div className="w-full h-64 overflow-hidden border border-black">
+                    <img src={`https://picsum.photos/${idx === 1 || idx === 5 ? '800' : '400'}/600?random=${num}`} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 grayscale group-hover:grayscale-0" alt="Gallery" />
+                  </div>
+                  <div className="absolute top-4 right-4 bg-white border-2 border-black p-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <Instagram className="w-5 h-5" />
+                  </div>
                 </div>
-              </div>
-              <div className="rounded-2xl overflow-hidden h-64 group relative md:col-span-2 cursor-view">
-                <img src="https://picsum.photos/800/600?random=7" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" alt="Gallery 2" />
-                <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                   <Instagram className="text-white w-8 h-8" />
-                </div>
-              </div>
-              <div className="rounded-2xl overflow-hidden h-64 group relative cursor-view">
-                <img src="https://picsum.photos/400/600?random=8" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" alt="Gallery 3" />
-                <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                   <Instagram className="text-white w-8 h-8" />
-                </div>
-              </div>
-              <div className="rounded-2xl overflow-hidden h-64 group relative cursor-view">
-                <img src="https://picsum.photos/400/600?random=9" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" alt="Gallery 4" />
-                <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                   <Instagram className="text-white w-8 h-8" />
-                </div>
-              </div>
-              <div className="rounded-2xl overflow-hidden h-64 group relative cursor-view">
-                <img src="https://picsum.photos/400/600?random=10" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" alt="Gallery 5" />
-                <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                   <Instagram className="text-white w-8 h-8" />
-                </div>
-              </div>
-              <div className="rounded-2xl overflow-hidden h-64 group relative md:col-span-2 cursor-view">
-                <img src="https://picsum.photos/800/600?random=11" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" alt="Gallery 6" />
-                <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                   <Instagram className="text-white w-8 h-8" />
-                </div>
-              </div>
+              ))}
            </div>
 
            <Button variant="outline" onClick={() => window.open('https://instagram.com', '_blank')}>
               <Instagram className="w-5 h-5 mr-2" />
-              Lihat Lebih Banyak di Instagram
+              Follow Instagram
            </Button>
         </div>
       </section>
 
       {/* --- FOOTER --- */}
-      <footer id="contact" className="bg-white pt-24 pb-8 rounded-t-[3rem] shadow-[0_-10px_40px_rgba(0,0,0,0.05)] relative z-10">
+      <footer id="contact" className="bg-black text-white pt-20 pb-8 border-t-4 border-sans-purple relative z-10">
         <div className="container mx-auto px-6">
           <div className="flex flex-col md:flex-row justify-between items-start gap-12 mb-16">
             <div className="md:w-1/3">
-              <h3 className="font-display font-black text-3xl tracking-tighter text-sans-purple mb-4">
-                SANS<span className="text-sans-yellow">.</span>
+              <h3 className="font-display font-black text-4xl tracking-tighter text-white mb-4 uppercase">
+                SANS<span className="text-sans-purple">.</span>PHOTOBOOTH
               </h3>
-              <p className="text-gray-500 mb-6">
+              <p className="text-gray-400 mb-6 font-mono text-sm border-l-2 border-sans-purple pl-4">
                 Abadikan setiap momen berharga dengan sentuhan estetik dan teknologi modern. Based in Surabaya, serving East Java.
               </p>
               <div className="flex gap-4">
-                <a href="#" className="w-10 h-10 rounded-full bg-sans-lightPurple flex items-center justify-center text-sans-purple hover:bg-sans-purple hover:text-white transition-colors">
-                  <Instagram size={20} />
+                <a href="#" className="w-12 h-12 bg-white border-2 border-transparent text-black flex items-center justify-center hover:bg-sans-purple hover:text-white hover:border-white transition-all shadow-[4px_4px_0px_0px_rgba(255,255,255,0.2)]">
+                  <Instagram size={24} />
                 </a>
-                <a href="#" className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center text-green-600 hover:bg-green-600 hover:text-white transition-colors">
-                  <Phone size={20} />
+                {/* Changed green button to yellow to match theme */}
+                <a href="#" className="w-12 h-12 bg-sans-yellow border-2 border-transparent text-black flex items-center justify-center hover:bg-white hover:text-black transition-all shadow-[4px_4px_0px_0px_rgba(255,255,255,0.2)]">
+                  <Phone size={24} />
                 </a>
               </div>
             </div>
 
             <div className="md:w-1/3">
-               <h4 className="font-bold text-lg mb-6">Kontak Kami</h4>
-               <ul className="space-y-4">
-                 <li className="flex items-start gap-3 text-gray-600">
-                    <MapPin className="flex-shrink-0 text-sans-purple mt-1" size={20} />
+               <h4 className="font-display font-bold text-xl mb-6 uppercase text-sans-yellow">Kontak Kami</h4>
+               <ul className="space-y-4 font-mono text-sm">
+                 <li className="flex items-start gap-3">
+                    <MapPin className="flex-shrink-0 text-sans-purple" size={20} />
                     <span>Surabaya, Jawa Timur, Indonesia.</span>
                  </li>
-                 <li className="flex items-start gap-3 text-gray-600">
-                    <Phone className="flex-shrink-0 text-sans-purple mt-1" size={20} />
+                 <li className="flex items-start gap-3">
+                    <Phone className="flex-shrink-0 text-sans-purple" size={20} />
                     <span>+62 882-3547-9203 (WhatsApp Only)</span>
                  </li>
-                 <li className="flex items-start gap-3 text-gray-600">
-                    <Instagram className="flex-shrink-0 text-sans-purple mt-1" size={20} />
+                 <li className="flex items-start gap-3">
+                    <Instagram className="flex-shrink-0 text-sans-purple" size={20} />
                     <span>@sansphotobooth</span>
                  </li>
                </ul>
             </div>
           </div>
 
-          <div className="border-t border-gray-100 pt-8 text-center text-gray-400 text-sm">
-            <p>© 2024 Sans Photobooth. Tiap Frame, Ada Cerita!</p>
+          <div className="border-t-2 border-white/20 pt-8 text-center text-gray-500 text-xs font-mono uppercase tracking-widest">
+            <p>© 2024 Sans Photobooth. Designed with Brutal Love.</p>
           </div>
         </div>
       </footer>

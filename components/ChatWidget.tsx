@@ -10,33 +10,28 @@ interface Message {
 const ChatWidget = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
-    { role: 'model', text: 'Halo bestie! 👋 Aku Sans AI. Ada yang bisa aku bantu soal photobooth?' }
+    { role: 'model', text: 'Yo whatsup! 👋 Gue Sans AI. Mau nanya photobooth buat event apa nih?' }
   ]);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [showWAPopup, setShowWAPopup] = useState(false); // State for WA Confirmation
+  const [showWAPopup, setShowWAPopup] = useState(false);
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  
-  // State untuk instance chat
   const [chatSession, setChatSession] = useState<Chat | null>(null);
 
-  // Refs untuk logika Drag-to-Scroll
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const isDragging = useRef(false);
   const startX = useRef(0);
   const scrollLeft = useRef(0);
-  const didDrag = useRef(false); // Flag untuk mencegah klik saat dragging
+  const didDrag = useRef(false);
 
-  // Shortcut Questions
   const shortcuts = [
-    "Berapa harganya?",
-    "Cara booking gimana?",
-    "Lokasi studio dimana?",
+    "Pricelist dong?",
+    "Cara booking?",
+    "Lokasi dimana?",
     "Ada paket wedding?"
   ];
 
-  // Scroll ke pesan terakhir
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
@@ -45,39 +40,25 @@ const ChatWidget = () => {
     scrollToBottom();
   }, [messages, isOpen]);
 
-  // Inisialisasi Gemini Chat saat komponen dimount
   useEffect(() => {
     const initChat = async () => {
       try {
-        // Prioritaskan env var, tapi gunakan key dari user jika env tidak terdeteksi
         const apiKey = process.env.API_KEY || 'AIzaSyBwGpVbSSkq4TECh6H2I7jPcolBmiOInzE';
-        
-        if (!apiKey) {
-          console.error("API Key kosong");
-          setMessages(prev => [...prev, { role: 'model', text: 'Maaf, sistem sedang maintenance (API Key missing).' }]);
-          return;
-        }
-
+        if (!apiKey) return;
         const ai = new GoogleGenAI({ apiKey });
-        
         const chat = ai.chats.create({
-          model: 'gemini-flash-lite-latest', // Menggunakan model Flash Lite sesuai request (Cepat & Hemat)
+          model: 'gemini-flash-lite-latest',
           config: {
-            systemInstruction: `Anda adalah 'Sans AI', asisten virtual untuk 'Sans Photobooth' di Surabaya.
-            Gaya bicara: Gen-Z, ramah, santai, menggunakan emoji, dan membantu. Gunakan bahasa Indonesia gaul tapi sopan (aku/kamu).
+            systemInstruction: `Anda adalah 'Sans AI', asisten virtual 'Sans Photobooth' Surabaya.
+            Style: Neo-Brutalist Gen-Z. Gunakan bahasa gaul, santai, to the point. Panggil user "Bro/Sist/Bestie".
+            Jangan terlalu formal.
             
-            Informasi Layanan:
-            1. Event Photobooth: Untuk wedding/party, kamera Sony, cetak instan.
-            2. Mobile Photobooth: Fotografer keliling (roving), langsung kirim softfile.
-            3. Self Photo Studio: Studio mandiri dengan remote, privasi penuh.
-            4. Software Solution: Jual software photobooth (B2B).
-
-            Keunggulan: Hasil Foto Super HD & Glowing, Share Softfile Instan via QR Code, Basecamp Surabaya (bisa ke seluruh Jatim).
-
-            PENTING:
-            - Jika ditanya soal HARGA/PRICELIST secara spesifik, arahkan pengguna untuk menghubungi WhatsApp admin di 088235479203 agar dapat penawaran terbaik.
-            - Jangan mengarang harga sendiri.
-            - Jawablah dengan ringkas (maksimal 3-4 kalimat per chat).
+            Info:
+            1. Event Photobooth: Wedding/Party, Sony Gear, Cetak Kilat.
+            2. Mobile: Fotografer keliling, softfile only.
+            3. Self Photo: Studio mandiri.
+            
+            PENTING: Kalau tanya HARGA, suruh WA ke 088235479203.
             `,
           },
         });
@@ -86,7 +67,6 @@ const ChatWidget = () => {
         console.error("Failed to init chat:", error);
       }
     };
-
     initChat();
   }, []);
 
@@ -101,29 +81,12 @@ const ChatWidget = () => {
     try {
       if (chatSession) {
         const result = await chatSession.sendMessage({ message: textToSend });
-        const text = result.text;
-        setMessages(prev => [...prev, { role: 'model', text: text }]);
+        setMessages(prev => [...prev, { role: 'model', text: result.text }]);
       } else {
-        // Coba init ulang atau berikan pesan error jika sesi belum siap
-        const errorMessage = 'Sistem AI sedang memuat ulang, coba kirim pesan lagi dalam beberapa detik ya! 🔄';
-        setMessages(prev => [...prev, { role: 'model', text: errorMessage }]);
+        setMessages(prev => [...prev, { role: 'model', text: 'Bentar loading AI...' }]);
       }
-    } catch (error: any) {
-      console.error("Chat Error:", error);
-      let errorMessage = 'Waduh, koneksi lagi gangguan nih. Coba refresh ya! 😢';
-      
-      // Deteksi error spesifik untuk feedback ke user
-      if (error.message) {
-        if (error.message.includes('API key')) {
-          errorMessage = 'Ups, API Key tidak valid atau expired. Kontak admin ya!';
-        } else if (error.message.includes('404') || error.message.includes('not found')) {
-          errorMessage = 'Model AI sedang sibuk. Coba lagi nanti.';
-        } else if (error.message.includes('503')) {
-          errorMessage = 'Server lagi penuh, bestie. Tunggu sebentar ya!';
-        }
-      }
-      
-      setMessages(prev => [...prev, { role: 'model', text: errorMessage }]);
+    } catch (error) {
+      setMessages(prev => [...prev, { role: 'model', text: 'Error nih jaringan. Refresh coba.' }]);
     } finally {
       setIsLoading(false);
     }
@@ -133,15 +96,11 @@ const ChatWidget = () => {
     if (e.key === 'Enter') handleSend();
   };
 
-  // WhatsApp Redirect Logic
   const handleWARedirect = () => {
-    const message = "Halo Sans AI 👋";
-    const url = `https://wa.me/6285117150919?text=${encodeURIComponent(message)}`;
-    window.open(url, '_blank');
+    window.open(`https://wa.me/6285117150919`, '_blank');
     setShowWAPopup(false);
   };
 
-  // --- Logic Drag & Scroll ---
   const handleMouseDown = (e: React.MouseEvent) => {
     isDragging.current = true;
     didDrag.current = false;
@@ -151,161 +110,104 @@ const ChatWidget = () => {
     }
   };
 
-  const handleMouseLeave = () => {
-    isDragging.current = false;
-  };
-
-  const handleMouseUp = () => {
-    isDragging.current = false;
-  };
-
+  const handleMouseLeave = () => { isDragging.current = false; };
+  const handleMouseUp = () => { isDragging.current = false; };
   const handleMouseMove = (e: React.MouseEvent) => {
     if (!isDragging.current) return;
-    e.preventDefault(); // Prevent text selection
-    didDrag.current = true; // Mark as dragged
+    e.preventDefault();
+    didDrag.current = true;
     if (scrollContainerRef.current) {
       const x = e.pageX - scrollContainerRef.current.offsetLeft;
-      const walk = (x - startX.current) * 1.5; // Multiplier for scroll speed
+      const walk = (x - startX.current) * 1.5;
       scrollContainerRef.current.scrollLeft = scrollLeft.current - walk;
     }
   };
 
-  const handleWheel = (e: React.WheelEvent) => {
-    // Mencegah scroll body saat scrolling horizontal di shortcut
-    e.stopPropagation();
-    if (scrollContainerRef.current) {
-      scrollContainerRef.current.scrollLeft += e.deltaY;
-    }
-  };
-
-  const handleShortcutClick = (shortcut: string) => {
-    // Jika user baru saja men-drag (bukan klik), jangan kirim pesan
-    if (didDrag.current) return;
-    handleSend(shortcut);
-  };
-
-  // Mencegah event scroll bocor ke parent saat mouse ada di dalam widget
-  const handlePopupWheel = (e: React.WheelEvent) => {
-    e.stopPropagation();
-  };
-
   return (
-    <div className="fixed bottom-6 right-6 z-[100] flex flex-col items-end pointer-events-none">
+    <div className="fixed bottom-6 right-6 z-[100] flex flex-col items-end pointer-events-none font-sans">
       
-      {/* 1. LAYER TOMBOL (Absolute) */}
+      {/* TRIGGER BUTTON */}
       <div 
-        className={`absolute bottom-0 right-0 transition-all duration-700 ease-in-out origin-center ${
+        className={`absolute bottom-0 right-0 transition-all duration-300 ease-in-out ${
           isOpen ? 'scale-0 opacity-0 pointer-events-none' : 'scale-100 opacity-100 pointer-events-auto'
         }`}
       >
         <button
           onClick={() => setIsOpen(true)}
-          className="group flex items-center gap-3 bg-sans-purple hover:bg-purple-800 text-white pl-5 pr-6 py-4 rounded-full shadow-2xl shadow-purple-900/30 transition-transform hover:scale-105 cursor-pointer"
+          className="group flex items-center gap-2 bg-sans-yellow text-black border-2 border-black pl-5 pr-6 py-4 shadow-neo transition-transform hover:-translate-y-1 hover:shadow-neo-lg cursor-pointer"
         >
-          <div className="relative">
-            <MessageCircle className="w-6 h-6 text-sans-yellow animate-pulse" />
-          </div>
-          <span className="font-bold font-display text-base tracking-wide">Tanya Sesuatu</span>
+          <MessageCircle className="w-6 h-6" strokeWidth={2.5} />
+          <span className="font-bold font-display uppercase tracking-wider">Chat AI</span>
         </button>
       </div>
 
-      {/* 2. LAYER POPUP CHAT (Absolute & Origin Bottom Right) */}
+      {/* CHAT WINDOW */}
       <div 
         className={`
-          relative origin-bottom-right transition-all duration-700 ease-in-out
-          bg-white rounded-3xl shadow-2xl border border-purple-100 overflow-hidden flex flex-col
-          w-[350px] md:w-[380px] h-[500px] overscroll-contain
+          relative origin-bottom-right transition-all duration-300 ease-in-out
+          bg-white border-2 border-black shadow-neo-lg flex flex-col
+          w-[350px] md:w-[380px] h-[500px]
           ${isOpen ? 'scale-100 opacity-100 translate-y-0 pointer-events-auto' : 'scale-0 opacity-0 translate-y-10 pointer-events-none'}
         `}
-        style={{ overscrollBehavior: 'contain' }}
-        onWheel={handlePopupWheel} // Stop propagation scroll ke body
+        onWheel={(e) => e.stopPropagation()}
       >
         
-        {/* === CONFIRMATION POPUP OVERLAY === */}
+        {/* WA Popup */}
         {showWAPopup && (
-          <div className="absolute inset-0 z-50 bg-black/40 backdrop-blur-[2px] flex items-center justify-center p-6 animate-fade-in">
-             <div className="bg-white rounded-2xl p-5 w-full shadow-2xl transform scale-100 animate-fadeIn">
-                <div className="flex flex-col items-center text-center">
-                  <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-3">
-                     <Phone className="text-green-600 w-6 h-6" />
-                  </div>
-                  <h4 className="font-bold text-gray-800 text-lg mb-1">Pindah ke WhatsApp?</h4>
-                  <p className="text-gray-500 text-sm mb-5">
-                    Kamu akan diarahkan ke chat WhatsApp Admin Sans AI.
-                  </p>
-                  <div className="flex gap-3 w-full">
-                    <button 
-                      onClick={() => setShowWAPopup(false)}
-                      className="flex-1 py-2.5 rounded-xl border border-gray-200 text-gray-600 font-semibold text-sm hover:bg-gray-50 transition-colors"
-                    >
-                      Batal
-                    </button>
-                    <button 
-                      onClick={handleWARedirect}
-                      className="flex-1 py-2.5 rounded-xl bg-green-500 text-white font-semibold text-sm hover:bg-green-600 shadow-md transition-colors"
-                    >
-                      Ya, Chat
-                    </button>
-                  </div>
+          <div className="absolute inset-0 z-50 bg-black/80 flex items-center justify-center p-6">
+             <div className="bg-white border-2 border-black p-6 w-full shadow-neo text-center">
+                <div className="w-12 h-12 bg-green-500 border-2 border-black mx-auto mb-4 flex items-center justify-center">
+                   <Phone className="text-white w-6 h-6" />
+                </div>
+                <h4 className="font-bold font-display uppercase mb-2">Switch ke WhatsApp?</h4>
+                <div className="flex gap-3 w-full mt-6">
+                  <button onClick={() => setShowWAPopup(false)} className="flex-1 py-2 border-2 border-black font-bold uppercase hover:bg-gray-200">Batal</button>
+                  <button onClick={handleWARedirect} className="flex-1 py-2 bg-green-500 border-2 border-black text-white font-bold uppercase hover:bg-green-600 shadow-neo-sm hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none transition-all">Gas</button>
                 </div>
              </div>
           </div>
         )}
 
         {/* Header */}
-        <div className="bg-sans-purple p-4 flex justify-between items-center shrink-0 z-10 relative">
+        <div className="bg-sans-purple border-b-2 border-black p-4 flex justify-between items-center z-10">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center backdrop-blur-sm">
-              <MessageCircle className="w-5 h-5 text-sans-yellow" />
+            <div className="w-8 h-8 bg-white border-2 border-black flex items-center justify-center">
+              <MessageCircle className="w-4 h-4 text-black" />
             </div>
             <div>
-              <h3 className="font-bold text-white text-lg leading-tight">Sans AI</h3>
-              <p className="text-purple-200 text-xs flex items-center gap-1">
-                <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
-                Online
+              <h3 className="font-bold font-display text-white uppercase leading-none">Sans AI</h3>
+              <p className="text-xs text-white font-mono flex items-center gap-1 mt-1">
+                <span className="w-2 h-2 bg-green-400 border border-black animate-pulse"></span>
+                ONLINE
               </p>
             </div>
           </div>
-          <button 
-            onClick={() => setIsOpen(false)}
-            className="text-white/70 hover:text-white hover:bg-white/10 p-2 rounded-full transition-colors cursor-pointer"
-          >
+          <button onClick={() => setIsOpen(false)} className="text-white hover:text-black hover:bg-white border-2 border-transparent hover:border-black p-1 transition-all cursor-pointer">
             <X size={20} />
           </button>
         </div>
 
-        {/* === WHATSAPP BANNER === */}
+        {/* WA Banner */}
         <button 
           onClick={() => setShowWAPopup(true)}
-          className="bg-green-50 px-4 py-3 flex items-center justify-between border-b border-green-100 hover:bg-green-100 transition-colors cursor-pointer group"
+          className="bg-green-300 border-b-2 border-black px-4 py-2 flex items-center justify-between hover:bg-green-400 cursor-pointer group"
         >
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center text-white shadow-sm group-hover:scale-110 transition-transform">
-              <Phone size={14} fill="white" />
-            </div>
-            <div className="text-left">
-               <p className="text-xs font-bold text-green-800 leading-tight">Sans AI tersedia di WhatsApp</p>
-               <p className="text-[10px] text-green-600">Klik untuk chat admin langsung</p>
-            </div>
+          <div className="flex items-center gap-2">
+            <Phone size={14} className="text-black" />
+            <span className="text-xs font-bold text-black uppercase">Chat Sans AI Di WhatsApp</span>
           </div>
-          <ChevronRight size={16} className="text-green-500 group-hover:translate-x-1 transition-transform" />
+          <ChevronRight size={16} className="text-black" />
         </button>
 
-        {/* Messages Area */}
-        <div 
-          className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50/50 overscroll-contain custom-scrollbar relative"
-          style={{ overscrollBehavior: 'contain' }}
-        >
+        {/* Chat Area */}
+        <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-[#f0f0f0] custom-scrollbar">
           {messages.map((msg, idx) => (
-            <div 
-              key={idx} 
-              className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
-            >
+            <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
               <div 
-                className={`max-w-[80%] p-3.5 rounded-2xl text-sm leading-relaxed ${
+                className={`max-w-[85%] p-3 border-2 border-black text-sm font-medium ${
                   msg.role === 'user' 
-                    ? 'bg-sans-purple text-white rounded-br-none' 
-                    : 'bg-white text-gray-700 border border-gray-100 shadow-sm rounded-bl-none'
+                    ? 'bg-black text-white shadow-[4px_4px_0px_0px_rgba(139,92,246,1)]' // Purple shadow
+                    : 'bg-white text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]'
                 }`}
               >
                 {msg.text}
@@ -314,64 +216,56 @@ const ChatWidget = () => {
           ))}
           {isLoading && (
             <div className="flex justify-start">
-              <div className="bg-white p-3 rounded-2xl rounded-bl-none border border-gray-100 shadow-sm flex items-center gap-2">
-                <Loader2 className="w-4 h-4 text-sans-purple animate-spin" />
-                <span className="text-xs text-gray-400">Ngetik...</span>
+              <div className="bg-white p-3 border-2 border-black flex items-center gap-2 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                <Loader2 className="w-4 h-4 animate-spin" />
+                <span className="text-xs font-bold uppercase">Typing...</span>
               </div>
             </div>
           )}
           <div ref={messagesEndRef} />
         </div>
 
-        {/* Shortcut & Input Area */}
-        <div className="bg-white border-t border-gray-100 shrink-0 relative z-20">
-          {/* Shortcuts Scrollable Area with Drag & Wheel support */}
+        {/* Input Area */}
+        <div className="bg-white border-t-2 border-black z-20">
           <div 
             ref={scrollContainerRef}
-            className="px-4 pt-3 pb-1 overflow-x-auto no-scrollbar flex gap-2 cursor-grab active:cursor-grabbing select-none overscroll-contain"
-            style={{ overscrollBehavior: 'contain' }}
+            className="px-4 pt-3 pb-2 overflow-x-auto no-scrollbar flex gap-2 cursor-grab active:cursor-grabbing border-b-2 border-black bg-gray-50"
             onMouseDown={handleMouseDown}
             onMouseLeave={handleMouseLeave}
             onMouseUp={handleMouseUp}
             onMouseMove={handleMouseMove}
-            onWheel={handleWheel}
           >
             {shortcuts.map((shortcut, idx) => (
                <button 
                  key={idx}
-                 onClick={() => handleShortcutClick(shortcut)}
-                 className="flex-shrink-0 text-xs font-medium bg-purple-50 text-sans-purple px-3 py-1.5 rounded-full hover:bg-sans-purple hover:text-white transition-colors border border-purple-100 pointer-events-auto"
+                 onClick={() => !didDrag.current && handleSend(shortcut)}
+                 className="flex-shrink-0 text-xs font-bold uppercase bg-white text-black px-3 py-1 border-2 border-black hover:bg-sans-yellow transition-colors pointer-events-auto shadow-neo-sm active:shadow-none active:translate-x-[2px] active:translate-y-[2px]"
                >
                  {shortcut}
                </button>
             ))}
           </div>
 
-          <div className="p-4 pt-2">
-            <div className="flex gap-2 items-center bg-gray-100 rounded-full px-4 py-2 border border-transparent focus-within:border-sans-purple/30 focus-within:bg-white focus-within:shadow-sm transition-all">
-              <input
-                type="text"
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
-                onKeyDown={handleKeyPress}
-                placeholder="Tanya harga atau layanan..."
-                className="flex-1 bg-transparent outline-none text-sm text-gray-700 placeholder-gray-400"
-              />
-              <button 
-                onClick={() => handleSend()}
-                disabled={isLoading || !inputValue.trim()}
-                className={`p-2 rounded-full transition-all ${
-                  isLoading || !inputValue.trim() 
-                    ? 'text-gray-400 bg-gray-200 cursor-not-allowed' 
-                    : 'bg-sans-purple text-white hover:bg-purple-800 shadow-md cursor-pointer'
-                }`}
-              >
-                <Send size={16} />
-              </button>
-            </div>
-            <div className="text-center mt-2">
-               <p className="text-[10px] text-gray-400">Dibuat oleh Sans Photobooth</p>
-            </div>
+          <div className="p-3 flex gap-2">
+            <input
+              type="text"
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              onKeyDown={handleKeyPress}
+              placeholder="Ketik pesan..."
+              className="flex-1 bg-white border-2 border-black px-3 py-2 outline-none text-sm font-bold placeholder-gray-400 focus:shadow-neo-sm transition-shadow"
+            />
+            <button 
+              onClick={() => handleSend()}
+              disabled={isLoading || !inputValue.trim()}
+              className={`px-3 py-2 border-2 border-black transition-all ${
+                isLoading || !inputValue.trim() 
+                  ? 'bg-gray-200 cursor-not-allowed opacity-50' 
+                  : 'bg-sans-purple text-white hover:bg-purple-700 shadow-neo-sm active:shadow-none active:translate-x-[1px] active:translate-y-[1px]'
+              }`}
+            >
+              <Send size={18} />
+            </button>
           </div>
         </div>
       </div>
