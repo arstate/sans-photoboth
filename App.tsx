@@ -61,7 +61,7 @@ function App() {
   };
 
   return (
-    <div className="font-sans text-black bg-white min-h-screen overflow-x-hidden">
+    <div className="font-sans text-black bg-white min-h-screen">
       <CustomCursor />
       <Navbar />
       <ChatWidget />
@@ -291,7 +291,7 @@ function App() {
           <div className="flex flex-col md:flex-row justify-between items-start gap-12 mb-16">
             <div className="md:w-1/3">
               {/* Responsive Text Size to avoid cropping on mobile */}
-              <h3 className="font-display font-black text-2xl sm:text-3xl md:text-4xl tracking-tighter text-white mb-4 uppercase leading-none break-words">
+              <h3 className="font-display font-black text-2xl sm:text-3xl md:text-4xl tracking-tighter text-white mb-4 uppercase leading-tight break-words">
                 SANS<span className="text-sans-purple">.</span>PHOTOBOOTH
               </h3>
               <p className="text-gray-400 mb-6 font-mono text-sm border-l-2 border-sans-purple pl-4">

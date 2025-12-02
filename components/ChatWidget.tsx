@@ -43,7 +43,7 @@ const ChatWidget = () => {
   useEffect(() => {
     const initChat = async () => {
       try {
-        const apiKey = process.env.API_KEY || 'AIzaSyBwGpVbSSkq4TECh6H2I7jPcolBmiOInzE';
+        const apiKey = process.env.API_KEY || 'AIzaSyBPRdM3f8Mk63KOb4KkOI7vdOk1_NUKbaA';
         if (!apiKey) return;
         const ai = new GoogleGenAI({ apiKey });
         const chat = ai.chats.create({
