@@ -43,6 +43,16 @@ const features = [
   "Desain Frame Estetik"
 ];
 
+const galleryImages = [
+  "https://lh3.googleusercontent.com/pw/AP1GczNXLt6eumNBDy2GufzXKMxgOA9BvDxVQZPg7vnhz1RMVEpuUokI77yfdpErFqQNd93CslOGmWxOV6W83L8n3z-bwEVr2cxfyOtVTge3DnTW2850RhU=w2400",
+  "https://lh3.googleusercontent.com/pw/AP1GczNHOECcuYnhgSoMRkuQ4P8vx59n2LmWjZOr2JBNU7u4oegApL9ABA_ikDPQ6RXEIE0-4nSvDn4USNQE_Edo2Adzr406vVtgCEE3z0JSL1qdUGJy_ho=w2400",
+  "https://lh3.googleusercontent.com/pw/AP1GczN5qAn7eg7C55Dwx10bJvFXl8TSSdqGutjO7j4IcKTIJrkLPAoGQXfofv9Ym0ItWvc_jKlBKvN8SooxR9Txy4qB1dxfmIaHiO4Toiacrhnl3uH7OkM=w2400",
+  "https://lh3.googleusercontent.com/pw/AP1GczPFPFVe-a_DWi_0aLh2tTRsCztvvcGzxHlJhG4zxkyFogypPnqEC5sgNeVIsRcxhPhJ9A3yjS4hssYoiGWkV2s08YNy_LhdseCC2bfmC7o6mDi0OAU=w2400",
+  "https://lh3.googleusercontent.com/pw/AP1GczM3Woe-RNUS2Ro1iGfJWyr6Q7kReYw0yoh5izfLDX3mezxeF6dPE3Lpw28zTQ6ZNx9c4al-WKjW63je5YUhB6P69Mf4e1AvqEzdNfUDeuUMDmIK3f8=w2400",
+  "https://lh3.googleusercontent.com/pw/AP1GczObYNf9N3O6PqAJwfweM0LqPW3u7irIKY9Fne-MaJ1GQE1C2onjF8DBFOYvY9uYHhQJNmdRjxtMnP8AZ5HpfDqjsjpg_0vGgxuTV2nDAzl3LovOz-Q=w2400",
+  "https://lh3.googleusercontent.com/pw/AP1GczP31L3PKZsuhfAhpJ9J6ZPemMKdP4ZH76vyZlw8mwk0EQ0iNS0DsSjNYO1jXr5yAHRW_5WNFAEcplrI9RLECV9z7lMhT3uf5KRIhf2_Lfso2YFh1nw=w2400"
+];
+
 function App() {
   const [activeDemoUrl, setActiveDemoUrl] = useState<string | null>(null);
   const [showDemoToast, setShowDemoToast] = useState(false);
@@ -343,20 +353,33 @@ function App() {
            </div>
            <p className="text-black font-bold mb-12 uppercase tracking-wide">Intip keseruan teman-teman Sans yang sudah cobain!</p>
            
-           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
-              {[6, 7, 8, 9, 10, 11].map((num, idx) => (
-                <div key={num} className={`relative border-2 border-black bg-white p-2 shadow-neo hover:shadow-none hover:translate-x-[4px] hover:translate-y-[4px] transition-all cursor-view group ${idx === 1 || idx === 5 ? 'md:col-span-2' : ''}`}>
-                  <div className="w-full h-64 overflow-hidden border border-black">
-                    <img src={`https://picsum.photos/${idx === 1 || idx === 5 ? '800' : '600'}/600?random=${num}`} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 grayscale group-hover:grayscale-0" alt="Gallery" />
+           {/* 
+              MASONRY LAYOUT IMPLEMENTATION:
+              - Mobile: columns-2 (2 columns side by side for portrait photos)
+              - Tablet: md:columns-3 (3 columns)
+              - Desktop: lg:columns-4 (4 columns for denser look)
+              - gap-4: Reduced gap to fit 2 cols nicely on mobile
+           */}
+           <div className="columns-2 md:columns-3 lg:columns-4 gap-4 space-y-4 mb-12 mx-auto max-w-7xl text-left">
+              {galleryImages.map((src, idx) => (
+                <div key={idx} className="break-inside-avoid relative border-2 border-black bg-white p-1 md:p-2 shadow-neo hover:shadow-none hover:translate-x-[4px] hover:translate-y-[4px] transition-all cursor-view group mb-4">
+                  {/* Container without fixed height to respect Aspect Ratio */}
+                  <div className="w-full border border-black overflow-hidden bg-gray-200">
+                    <img 
+                      src={src} 
+                      className="w-full h-auto block grayscale group-hover:grayscale-0 transition-all duration-500" 
+                      alt={`Gallery Moment ${idx + 1}`} 
+                      loading="lazy"
+                    />
                   </div>
-                  <div className="absolute top-4 right-4 bg-white border-2 border-black p-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <Instagram className="w-5 h-5" />
+                  <div className="absolute top-4 right-4 bg-white border-2 border-black p-1 opacity-0 group-hover:opacity-100 transition-opacity z-10 hidden md:block">
+                    <Instagram className="w-4 h-4 md:w-5 md:h-5" />
                   </div>
                 </div>
               ))}
            </div>
 
-           <Button variant="outline" onClick={() => window.open('https://instagram.com', '_blank')}>
+           <Button variant="outline" onClick={() => window.open('https://instagram.com/sansphotobooth', '_blank')}>
               <Instagram className="w-5 h-5 mr-2" />
               Follow Instagram
            </Button>
